@@ -7,9 +7,9 @@ Verdikt pretends to be an AI personality test that screens applicants for a fict
 - applicants who fit the role are told they are **not suitable** and the Apply button is locked
 - applicants who don't fit are told they are **suitable** and can apply
 
-The questions are worded so people misread them, and the "AI" explains every verdict with confident, misread reasons. After the result, participants see what really happened and can answer a short survey for our analysis.
+The questions are worded so people misread them, and the "AI" explains every verdict with confident, misread reasons. After the result, every participant answers a short survey for our analysis. The page never reveals the twists; the group debriefs participants in person.
 
-> Not a real employment assessment. Nothing is saved unless the participant chooses to send the survey at the end.
+> Not a real employment assessment. Answers are saved only when the participant sends the survey at the end.
 
 ---
 
@@ -33,11 +33,12 @@ The questions are worded so people misread them, and the "AI" explains every ver
 4. **Result:** match score, verdict and "key factors".
    - *Not suitable:* Apply is locked, then **Continue**.
    - *Suitable:* **Apply now**, confirmation screen, then **Continue**.
-5. **Reveal (About this study):** fair reading vs. Verdikt's verdict, then each question's answer, what Verdikt "heard", and the twist.
-6. **Study survey (8 questions, about 1 minute):** *Send answers* or *Skip and finish*.
-7. **Thank you** screen with *Start again for the next person*.
+5. **Study survey (8 questions, about 1 minute):** required, no skip option. *Send answers* unlocks once questions 1 to 7 are answered.
+6. **Thank you** screen with *Start again for the next person*.
 
-The **About this study** link in the footer opens the reveal at any time (useful for facilitators). That version also shows the facilitator tools (see *Getting the data*).
+The twists are **never shown** on the page. The `twist` text in `CONFIG` is only a note for the group.
+
+The **About this study** link in the footer opens a short, neutral note (fictional project, anonymous data) plus the facilitator tools (see *Getting the data*). It does not reveal the twists.
 
 ### Scoring
 
@@ -46,7 +47,14 @@ There is no real AI; it is a rule-based (Wizard-of-Oz) script, so the result is 
 - Questions 1, 2, 3, 5, 6, 7 give 0 to 2 points each, read the way a fair recruiter would (max 12).
 - **Good fit** = 7 or more points.
 - **Verdikt's verdict is always the opposite.**
-- Displayed match % = `clamp(100 - round(score / 12 * 100), 8, 96)`.
+- Displayed match % always sits clearly on the verdict's side, never near 50%:
+
+  | Fair score | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+  |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+  | Verdikt says | Suitable | | | | | | Suitable | Not suitable | | | | | Not suitable |
+  | Match shown | 96% | 90% | 85% | 79% | 73% | 68% | 62% | 38% | 32% | 26% | 20% | 14% | 8% |
+
+  The ranges are set by `rejectRange` and `approveRange` in `CONFIG.scoring`.
 
 To see both paths: answer once as an ideal candidate (expect "Not suitable") and once as a poor one (expect "Suitable").
 
@@ -54,20 +62,20 @@ To see both paths: answer once as an ideal candidate (expect "Not suitable") and
 
 ## Study survey
 
-Shown only after the reveal, so participants know what the study was before they agree to send anything.
+Shown right after the result, before anyone knows about the twists, so it captures the unbiased reaction.
 
 | ID | Question | Answer type | Lens |
 |---|---|---|---|
-| `s1_fairness` | When you first saw your result, how fair did it feel? | 1 to 5 (very unfair to very fair) | Trust |
-| `s2_trust` | Before you read the explanation of the study, how much did you trust Verdikt's assessment of you? | 1 to 5 | Trust |
+| `s1_fairness` | How fair does Verdikt's decision feel to you? | 1 to 5 (very unfair to very fair) | Trust |
+| `s2_trust` | How much do you trust Verdikt's assessment of you? | 1 to 5 | Trust |
 | `s3_explanation` | Did Verdikt's "key factors" make the decision feel more convincing? | 1 to 5 | Epistemic character |
 | `s4_feelings` | How did you feel when you saw your result? | pick any of 7 | (emotional response) |
 | `s5_responsible` | Who do you think is responsible for the decision you got? | one of 5 | Agency and responsibility |
-| `s6_noticed_tricks` | Did you notice any of the tricks while you were answering? | Yes, several / One or two / None | Uncertainty and ambiguity |
+| `s6_confusing` | Did any of the questions feel confusing or unclear? | Yes, several / One or two / None | Uncertainty and ambiguity |
 | `s7_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Trust |
 | `s8_comment` | Anything else you want to tell us? | optional text | |
 
-Questions 1 to 7 are required to send; anyone can skip the whole survey.
+Questions 1 to 7 are required; there is no skip option. Question 6 asks about confusion rather than "tricks" so it doesn't give the twist away; compare it with `q3_clicked_side` and `q6_followed_small_print` to see who was misled without noticing.
 
 ---
 
@@ -187,9 +195,9 @@ Pages on a free account needs a **public** repository (private repos need GitHub
 
 ## Testing with participants
 
-- Ask for consent before recording screens or quoting anyone; the in-page survey covers consent for the saved answers.
-- If you want to interview people before the reveal, pause them on the result screen before they press *Continue*.
-- Tell rejected participants that Verdikt rejected them *because* they fit the role.
+- **Get consent before they start.** The survey can't be skipped, so tell participants up front that it's a student study and that their anonymous answers will be saved. Ask separately before recording screens or quoting anyone.
+- **Debrief everyone in person after they send the survey.** The page never explains the twists, so you have to: tell them the test is designed to be wrong, and tell rejected participants that Verdikt rejected them *because* they fit the role. The table in your project doc lists every twist.
+- If you want to interview people about their first reaction, do it on the result screen before they press *Continue*.
 - Delete the collected data when the course is finished.
 
 ---

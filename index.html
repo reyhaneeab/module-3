@@ -620,7 +620,9 @@
         ]
       },
 
-      scoring: { maxScore: 12, goodFitThreshold: 7, minShown: 8, maxShown: 96 },
+      // Shown match %: "Not suitable" runs from 38% (just a good fit) down to 8% (perfect fit);
+      // "Suitable" runs from 62% (just a poor fit) up to 96% (worst fit). It never shows a borderline 50%.
+      scoring: { maxScore: 12, goodFitThreshold: 7, rejectRange: [38, 8], approveRange: [62, 96] },
 
       result: {
         matchLabel: 'match',
@@ -674,7 +676,7 @@
 
       survey: {
         // Paste your Google Apps Script web app URL between the quotes to also send answers to a Google Sheet (see README).
-        endpoint: '',
+        endpoint: 'https://script.google.com/macros/s/AKfycbws4MZMeEF9Tke0oyoLvAz13LTNL5TVJ2Ju9qz5vUVdcl0jAzRMx24g71BYkdeZcVvHsg/exec',
         storageKey: 'verdikt-study-responses',
         eyebrow: 'TIA400 study · about 1 minute',
         title: 'A few questions about your experience',
@@ -748,7 +750,6 @@
       { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
     ));
     const fill = (template, vars) => template.replace(/\{(\w+)\}/g, (_, key) => (key in vars ? vars[key] : ''));
-    const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
     const companyVars = { role: CONFIG.company.role, company: CONFIG.company.name };
 
     function later(fn, ms) { state.timers.push(setTimeout(fn, ms)); }
@@ -814,7 +815,7 @@
     }
 
     function evaluate() {
-      const { maxScore, goodFitThreshold, minShown, maxShown } = CONFIG.scoring;
+      const { maxScore, goodFitThreshold, rejectRange, approveRange } = CONFIG.scoring;
       let score = 0;
       const scored = [];
       QUESTIONS.filter(isScored).forEach((q) => {
@@ -832,7 +833,12 @@
       const textQ = byType('text');
       factors.push(heardFor(colourQ, state.answers[colourQ.id], verdict));
       factors.push(heardFor(textQ, state.answers[textQ.id], verdict));
-      const match = clamp(100 - Math.round((score / maxScore) * 100), minShown, maxShown);
+      // How far past the threshold the fair reading is (0 = borderline, 1 = extreme), mapped onto the verdict's range.
+      const strength = goodFit
+        ? (score - goodFitThreshold) / (maxScore - goodFitThreshold)
+        : (goodFitThreshold - 1 - score) / (goodFitThreshold - 1);
+      const [from, to] = goodFit ? rejectRange : approveRange;
+      const match = Math.round(from + (to - from) * strength);
       return { score, maxScore, goodFit, verdict, match, factors };
     }
 
