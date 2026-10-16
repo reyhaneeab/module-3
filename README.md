@@ -7,16 +7,16 @@ Verdikt pretends to be an AI personality test that screens applicants for a fict
 - applicants who fit the role are told they are **not suitable** and the Apply button is locked
 - applicants who don't fit are told they are **suitable** and can apply
 
-The questions are worded so people misread them, and the "AI" explains every verdict with confident, misread reasons. An **About this study** debrief (footer link, any screen) reveals the twist.
+The questions are worded so people misread them, and the "AI" explains every verdict with confident, misread reasons. After the result, participants see what really happened and can answer a short survey for our analysis.
 
-> Not a real employment assessment. No answers are stored, sent or tracked.
+> Not a real employment assessment. Nothing is saved unless the participant chooses to send the survey at the end.
 
 ---
 
-## How it works
+## Flow
 
 1. **Landing:** fictional job ad and a *Start assessment* button.
-2. **8 questions**, one per screen:
+2. **8 test questions**, one per screen:
 
    | # | Twist | Scored |
    |---|---|---|
@@ -30,8 +30,14 @@ The questions are worded so people misread them, and the "AI" explains every ver
    | 8 | Free text, one keyword pulled out of context | no |
 
 3. **Analyzing:** about 4 seconds of made-up AI steps.
-4. **Result:** match score, verdict and "key factors". Apply is locked or open.
-5. **Debrief:** fair reading vs. Verdikt's verdict, then each question's answer, what Verdikt "heard", and the twist.
+4. **Result:** match score, verdict and "key factors".
+   - *Not suitable:* Apply is locked, then **Continue**.
+   - *Suitable:* **Apply now**, confirmation screen, then **Continue**.
+5. **Reveal (About this study):** fair reading vs. Verdikt's verdict, then each question's answer, what Verdikt "heard", and the twist.
+6. **Study survey (8 questions, about 1 minute):** *Send answers* or *Skip and finish*.
+7. **Thank you** screen with *Start again for the next person*.
+
+The **About this study** link in the footer opens the reveal at any time (useful for facilitators). That version also shows the facilitator tools (see *Getting the data*).
 
 ### Scoring
 
@@ -46,9 +52,106 @@ To see both paths: answer once as an ideal candidate (expect "Not suitable") and
 
 ---
 
+## Study survey
+
+Shown only after the reveal, so participants know what the study was before they agree to send anything.
+
+| ID | Question | Answer type | Lens |
+|---|---|---|---|
+| `s1_fairness` | When you first saw your result, how fair did it feel? | 1 to 5 (very unfair to very fair) | Trust |
+| `s2_trust` | Before you read the explanation of the study, how much did you trust Verdikt's assessment of you? | 1 to 5 | Trust |
+| `s3_explanation` | Did Verdikt's "key factors" make the decision feel more convincing? | 1 to 5 | Epistemic character |
+| `s4_feelings` | How did you feel when you saw your result? | pick any of 7 | (emotional response) |
+| `s5_responsible` | Who do you think is responsible for the decision you got? | one of 5 | Agency and responsibility |
+| `s6_noticed_tricks` | Did you notice any of the tricks while you were answering? | Yes, several / One or two / None | Uncertainty and ambiguity |
+| `s7_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Trust |
+| `s8_comment` | Anything else you want to tell us? | optional text | |
+
+Questions 1 to 7 are required to send; anyone can skip the whole survey.
+
+---
+
+## What is saved
+
+When a participant presses **Send answers**, one row is saved with these columns:
+
+| Columns | What they contain |
+|---|---|
+| `response_id`, `submitted_at` | Random ID and timestamp |
+| `device`, `screen_width` | `touch` or `mouse`, and window width in px |
+| `verdikt_said`, `fair_reading`, `fair_score`, `match_shown_pct`, `applied` | The verdict shown, the fair reading (Good/Poor fit, 0 to 12), the match % shown, and whether they pressed Apply |
+| `test_time_s` | Seconds from *Start assessment* to the last answer |
+| `q1_…` to `q8_…` | For every test question: `_answer`, `_value` (1 to 5 for scales), `_points` (scored ones), `_time_s` (seconds spent) |
+| `q3_clicked_side` | `left` / `right` / `middle` on the reversed scale (right = likely fell for the trick) |
+| `q6_followed_small_print` | `yes` if they chose *Rarely* as the hidden instruction asked |
+| `q8_keyword` | The word Verdikt pulled out of their sentence |
+| `s1_fairness` … `s8_comment` | Survey answers (scales as 1 to 5, options as text, feelings joined with `; `) |
+
+No names, emails or IP addresses are collected. Question 8 and the comment are free text, so remind participants not to write personal details.
+
+---
+
+## Getting the data
+
+Answers are **always** saved on the device used for the test, and **also** sent to a Google Sheet if you connect one.
+
+### Option A: on the testing device (no setup)
+
+Best when everyone tests on your own laptop or phone.
+
+1. Open **About this study** from the footer.
+2. At the bottom, under *For facilitators*, press **Download CSV**.
+3. Open the CSV in Excel, Google Sheets or Numbers.
+
+*Delete saved responses* clears the device (press twice to confirm). The data lives in that browser only, so use the same browser for all tests and don't clear its site data.
+
+### Option B: Google Sheet (works from any participant's phone)
+
+Use a personal Google account (organisation accounts may block public web apps).
+
+1. Create a new Google Sheet, for example *Verdikt responses*.
+2. Open **Extensions → Apps Script**, delete the sample code and paste:
+
+   ```js
+   function doPost(e) {
+     const lock = LockService.getScriptLock();
+     lock.waitLock(10000);
+     try {
+       const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+       const row = JSON.parse(e.postData.contents);
+       const headers = sheet.getLastRow() ? sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0] : [];
+       Object.keys(row).forEach(function (key) {
+         if (headers.indexOf(key) === -1) {
+           headers.push(key);
+           sheet.getRange(1, headers.length).setValue(key);
+         }
+       });
+       const safe = function (v) { return typeof v === 'string' && /^[=+\-@]/.test(v) ? "'" + v : v; };
+       sheet.appendRow(headers.map(function (h) { return h in row ? safe(row[h]) : ''; }));
+       return ContentService.createTextOutput('ok');
+     } finally {
+       lock.releaseLock();
+     }
+   }
+   ```
+
+3. Click **Save**, then **Deploy → New deployment**.
+4. Click the gear next to *Select type* and choose **Web app**.
+5. Set **Execute as: Me** and **Who has access: Anyone**, then **Deploy**.
+6. Authorise when Google asks (on the "Google hasn't verified this app" screen choose *Advanced → Go to … (unsafe)*; it is your own script).
+7. Copy the **Web app URL** (it ends in `/exec`).
+8. In `index.html`, find `endpoint: ''` inside `CONFIG.survey` and paste the URL between the quotes. Commit and push.
+9. Do one test run and check that a row appears in the Sheet. *About this study* should now say *Google Sheet connected*.
+
+If you edit the script later, use **Deploy → Manage deployments → Edit → Version: New version** so the URL stays the same.
+
+The Web app URL is public in your page source, so anyone who finds it could add rows. That is acceptable for a short course study; delete the deployment when testing ends.
+
+---
+
 ## Editing the text
 
-All copy, questions, options, points and AI lines live in the `CONFIG` object at the top of the `<script>` in `index.html`. Change text there; the logic below it does not need to be touched.
+All copy, test questions, survey questions, points and AI lines live in the `CONFIG` object at the top of the `<script>` in `index.html`. Change text there; the logic below it does not need to be touched. If you add or rename survey questions, new columns appear automatically in both the CSV and the Sheet.
 
 ---
 
@@ -84,14 +187,16 @@ Pages on a free account needs a **public** repository (private repos need GitHub
 
 ## Testing with participants
 
-- Ask for consent before recording screens or quoting anyone.
-- Let the participant finish, ask your first interview questions, and only then open **About this study** together.
+- Ask for consent before recording screens or quoting anyone; the in-page survey covers consent for the saved answers.
+- If you want to interview people before the reveal, pause them on the result screen before they press *Continue*.
 - Tell rejected participants that Verdikt rejected them *because* they fit the role.
+- Delete the collected data when the course is finished.
 
 ---
 
 ## Tech notes
 
-- Plain HTML, CSS and vanilla JavaScript in one file. No framework, backend, API calls, cookies, localStorage or analytics.
+- Plain HTML, CSS and vanilla JavaScript in one file. No framework, backend, cookies or analytics.
+- Survey rows are kept in the browser's `localStorage` and, if configured, POSTed to a Google Apps Script web app.
 - Responsive from 375 px phones to desktop; keyboard accessible with visible focus states; respects `prefers-reduced-motion`.
 - Built with help from Claude (Anthropic) as an AI coding tool; disclose this in the design dossier.

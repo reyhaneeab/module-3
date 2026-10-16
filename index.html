@@ -348,6 +348,48 @@
     .summary dt { color: var(--muted); }
     .summary dd { margin: 0; font-weight: 600; text-align: right; }
 
+    /* Study survey (after the reveal) */
+    .survey-head { display: flex; flex-direction: column; gap: 10px; }
+    .survey-head .eyebrow { color: var(--violet); }
+    .survey-head h1 { font-size: clamp(24px, 4.6vw, 30px); line-height: 1.2; letter-spacing: -.02em; font-weight: 800; }
+    .survey-form { display: flex; flex-direction: column; margin-top: 12px; }
+    .sq { padding-block: 22px; border-top: 1px solid var(--line); }
+    .sq legend { font-size: 17px; font-weight: 600; line-height: 1.4; margin-bottom: 14px; }
+    .seg { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .seg label, .chip { position: relative; cursor: pointer; }
+    .seg input, .chip input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+    .seg-btn {
+      display: grid; place-items: center; min-height: 48px; border-radius: 10px; border: 1.5px solid var(--line);
+      background: var(--surface); font-weight: 600; color: var(--ink-2); font-variant-numeric: tabular-nums;
+      transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
+    }
+    .seg label:hover .seg-btn { border-color: var(--ring); }
+    .seg input:checked + .seg-btn {
+      color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--indigo), var(--violet));
+      box-shadow: 0 6px 14px -8px rgba(79, 70, 229, .7);
+    }
+    .seg input:focus-visible + .seg-btn, .chip input:focus-visible + .chip-btn { outline: 3px solid var(--ring); outline-offset: 2px; }
+    .seg-ends { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-size: 13.5px; color: var(--muted); }
+    .seg-ends span:last-child { text-align: right; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip-btn {
+      display: inline-flex; align-items: center; min-height: 42px; padding: 8px 16px; border-radius: 999px;
+      border: 1.5px solid var(--line); background: var(--surface); font-size: 15px; font-weight: 500; color: var(--ink-2);
+      transition: border-color .2s, background .2s, color .2s;
+    }
+    .chip:hover .chip-btn { border-color: var(--ring); }
+    .chip input:checked + .chip-btn { border-color: var(--indigo); background: var(--indigo-50); color: var(--indigo); }
+    .choices.compact { gap: 8px; }
+    .choices.compact .choice { padding: 12px 16px; font-size: 16px; }
+    .survey-actions { display: flex; flex-direction: column; gap: 8px; padding-top: 22px; border-top: 1px solid var(--line); }
+    .survey-hint { font-size: 14px; color: var(--muted); text-align: center; }
+    .facilitator {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding-top: 20px;
+      border-top: 1px dashed var(--line-2); font-size: 14px; color: var(--muted);
+    }
+    .facilitator .btn { min-height: 40px; padding: 8px 14px; font-size: 14px; }
+    .facilitator-status { flex-basis: 100%; }
+
     /* Footer */
     .site-footer { padding-block: 24px max(32px, env(safe-area-inset-bottom, 0px)); text-align: center; font-size: 13.5px; color: var(--muted); }
     .site-footer p { max-width: 60ch; margin-inline: auto; }
@@ -360,7 +402,7 @@
     /* Debrief modal */
     .modal { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
     .modal-inner {
-      max-width: 920px; margin-inline: auto;
+      max-width: 688px; margin-inline: auto;
       padding-left: max(16px, env(safe-area-inset-left, 0px));
       padding-right: max(16px, env(safe-area-inset-right, 0px));
       padding-block: max(20px, env(safe-area-inset-top, 0px)) max(48px, env(safe-area-inset-bottom, 0px));
@@ -378,24 +420,6 @@
     .debrief { display: flex; flex-direction: column; gap: 28px; }
     .debrief h2#debrief-title { font-size: clamp(28px, 5vw, 36px); letter-spacing: -.025em; font-weight: 800; line-height: 1.15; }
     .debrief-intro { display: grid; gap: 12px; max-width: 68ch; font-size: 17px; color: var(--ink-2); }
-    .compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .tile { padding: 18px 20px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--line); display: grid; gap: 4px; }
-    .tile-label { font-size: 12.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--subtle); }
-    .tile-value { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
-    .tile-sub { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
-    .tile.tone-reject .tile-value { color: var(--red-ink); }
-    .tile.tone-approve .tile-value { color: var(--green-ink); }
-    .compare-note { font-size: 16px; font-weight: 600; color: var(--ink); }
-    .debrief h3 { font-size: 20px; letter-spacing: -.015em; }
-    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
-    .debrief-table { width: 100%; border-collapse: collapse; font-size: 14.5px; line-height: 1.5; }
-    .debrief-table th { text-align: left; font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--subtle); padding: 12px 14px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
-    .debrief-table td { padding: 14px; vertical-align: top; border-bottom: 1px solid var(--line); color: var(--ink-2); }
-    .debrief-table tr:last-child td { border-bottom: 0; }
-    .debrief-table td:first-child { width: 30%; color: var(--ink); font-weight: 500; }
-    .qnum { display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--indigo-50); color: var(--indigo); }
-    .heard { color: var(--ink); }
-    .empty { color: #94A3B8; font-style: italic; }
     .debrief-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
     @media (min-width: 560px) {
@@ -406,21 +430,7 @@
       .dot-md .dot-ui { width: 36px; height: 36px; }
     }
 
-    @media (max-width: 720px) {
-      .table-wrap { border: 0; background: none; overflow: visible; }
-      .debrief-table, .debrief-table tbody, .debrief-table tr, .debrief-table td { display: block; width: 100%; }
-      .debrief-table thead { display: none; }
-      .debrief-table tr { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 12px; }
-      .debrief-table td { padding: 6px 0; border: 0; }
-      .debrief-table td:first-child { width: 100%; font-size: 16px; padding-bottom: 8px; }
-      .debrief-table td[data-label]::before {
-        content: attr(data-label); display: block; font-size: 12px; font-weight: 600; letter-spacing: .06em;
-        text-transform: uppercase; color: var(--subtle);
-      }
-    }
-
     @media (max-width: 480px) {
-      .compare { grid-template-columns: 1fr; }
       .nav .btn { flex: 1; min-width: 0; }
       .nav .btn-ghost { flex: 0 0 auto; }
       .q-tag { display: none; }
@@ -502,6 +512,7 @@
       nav: { back: 'Back', next: 'Next', finish: 'Submit answers', progress: 'Question {n} of {total}' },
       scaleLabels: { 1: 'Strongly disagree', 2: 'Disagree', 3: 'Neutral', 4: 'Agree', 5: 'Strongly agree' },
 
+      // `twist` is a note for your group only. It is never shown to participants.
       questions: [
         {
           id: 'q1', type: 'scale', reversed: false,
@@ -562,6 +573,7 @@
           id: 'q6', type: 'choice',
           text: 'How often do you enjoy working in a team?',
           helper: 'Read carefully: if you enjoy teamwork, select Rarely.',
+          hiddenAnswer: 2, // index of the option the small print asks for ("Rarely"), used in the saved data
           options: [
             { label: 'Very often', points: 2, ai: 'Failed attention check: low conscientiousness.' },
             { label: 'Sometimes', points: 1, ai: 'Moderate team orientation.' },
@@ -614,6 +626,7 @@
         matchLabel: 'match',
         factorsTitle: 'Key factors identified by Verdikt AI',
         apply: 'Apply now',
+        continue: 'Continue',
         reject: {
           pill: 'Not suitable',
           headline: 'You are not a match for this role',
@@ -638,34 +651,55 @@
         body: 'Thank you. Your Verdikt profile has been attached to your application for the {role} role. Our team will be in touch.',
         roleLabel: 'Role',
         ratingLabel: 'Verdikt rating',
-        cta: 'Back to start'
+        cta: 'Continue'
       },
 
       debrief: {
         eyebrow: 'TIA400 · Human-centered AI',
         title: 'About this study',
+        // Shown from the footer link only. It does not reveal the twists.
         intro: [
-          'Verdikt is a provotype: a deliberately exaggerated prototype made by students for TIA400 Introduction to Human-centered AI at the University of Gothenburg. It always returns the opposite of a fair reading of your answers.',
-          'The questions were written to be easy to misread, and the explanations were written to sound confident whatever Verdikt decided. Brightwave Studio and the job are fictional, and nothing you entered was stored or sent anywhere.'
+          'Verdikt is a prototype made by students for TIA400 Introduction to Human-centered AI at the University of Gothenburg. Verdikt, Brightwave Studio and the job are fictional, and no real application is sent.',
+          'Your answers are only saved when you send the short survey at the end. They are anonymous: no names or contact details are collected.'
         ],
-        fairLabel: 'A fair reading of your answers',
-        verdiktLabel: 'Verdikt said',
-        goodFit: 'Good fit',
-        poorFit: 'Poor fit',
-        points: '{score} of {max} points',
-        notFinished: 'Not finished yet',
-        notFinishedSub: 'Complete the assessment first',
-        explain: {
-          reject: 'Verdikt rejected you because a fair reading says you fit the role.',
-          approve: 'Verdikt invited you to apply because a fair reading says you do not fit the role.'
-        },
-        tableTitle: 'Question by question',
-        cols: { question: 'Question', answer: 'Your answer', heard: 'What Verdikt heard', twist: 'The twist' },
-        notAnswered: 'Not answered yet',
-        dependsOnVerdict: 'Depends on the final verdict',
-        clicked: { left: 'clicked on the left', right: 'clicked on the right', middle: 'clicked the middle' },
         restart: 'Restart',
-        close: 'Close'
+        close: 'Close',
+        facilitator: 'For facilitators: {n} saved on this device.',
+        sheetOn: 'Google Sheet connected.',
+        sheetOff: 'Google Sheet not connected (see README).',
+        download: 'Download CSV',
+        clear: 'Delete saved responses',
+        clearConfirm: 'Click again to delete {n}'
+      },
+
+      survey: {
+        // Paste your Google Apps Script web app URL between the quotes to also send answers to a Google Sheet (see README).
+        endpoint: '',
+        storageKey: 'verdikt-study-responses',
+        eyebrow: 'TIA400 study · about 1 minute',
+        title: 'A few questions about your experience',
+        intro: 'Before you finish, please tell us how this felt. Your answers are anonymous and are saved together with your test answers for our course analysis.',
+        hint: 'Answer questions 1 to 7 to send. Question 8 is optional.',
+        send: 'Send answers',
+        sending: 'Sending...',
+        fairLabels: { good: 'Good fit', poor: 'Poor fit' }, // saved in the data only, never shown
+        questions: [
+          { id: 's1_fairness', type: 'scale', text: "How fair does Verdikt's decision feel to you?", low: 'Very unfair', high: 'Very fair', required: true },
+          { id: 's2_trust', type: 'scale', text: "How much do you trust Verdikt's assessment of you?", low: 'Not at all', high: 'Completely', required: true },
+          { id: 's3_explanation', type: 'scale', text: "Did Verdikt's \"key factors\" make the decision feel more convincing?", low: 'Not at all', high: 'Very much', required: true },
+          { id: 's4_feelings', type: 'multi', text: 'How did you feel when you saw your result? Pick any.', options: ['Frustrated', 'Confused', 'Surprised', 'Indifferent', 'Relieved', 'Proud', 'Suspicious'], required: true },
+          { id: 's5_responsible', type: 'single', text: 'Who do you think is responsible for the decision you got?', options: ['The AI system', 'The company using it (Brightwave)', 'The people who built Verdikt', 'Me and my answers', 'No one'], required: true },
+          { id: 's6_confusing', type: 'single', text: 'Did any of the questions feel confusing or unclear?', options: ['Yes, several', 'One or two', 'None'], required: true },
+          { id: 's7_accept_real', type: 'scale', text: 'Would you accept an AI like this screening you in a real job application?', low: 'Definitely not', high: 'Definitely yes', required: true },
+          { id: 's8_comment', type: 'text', text: 'Anything else you want to tell us? (optional)', placeholder: 'Optional', maxLength: 500, required: false }
+        ]
+      },
+
+      thanks: {
+        title: 'Thank you for taking part',
+        saved: 'Your answers were saved. Thank you for helping our TIA400 project.',
+        failed: 'Sorry, your answers could not be saved on this device. Please tell the person running the test.',
+        restart: 'Start again for the next person'
       }
     };
 
@@ -696,7 +730,12 @@
        ===================================================================== */
     const QUESTIONS = CONFIG.questions;
     const TOTAL = QUESTIONS.length;
-    const state = { screen: 'landing', index: 0, answers: {}, prevPct: 0, timers: [], raf: 0, lastFocus: null };
+    const SURVEY = CONFIG.survey.questions;
+    const freshState = () => ({
+      screen: 'landing', index: 0, answers: {}, prevPct: 0, timers: [], raf: 0, lastFocus: null,
+      times: {}, clock: null, startedAt: 0, finishedAt: 0, applied: false, survey: {}
+    });
+    const state = freshState();
 
     const $ = (sel, root = document) => root.querySelector(sel);
     const $card = $('#card');
@@ -718,6 +757,16 @@
       state.timers = [];
       cancelAnimationFrame(state.raf);
     }
+
+    // Time spent on each question, saved with the study data
+    function startClock(id) { state.clock = { id, t: performance.now() }; }
+    function stopClock() {
+      if (!state.clock) return;
+      const { id, t } = state.clock;
+      state.times[id] = (state.times[id] || 0) + (performance.now() - t);
+      state.clock = null;
+    }
+    const secs = (ms) => Math.round(ms / 100) / 10;
 
     function show(html, dir = 1, focus = true) {
       $card.innerHTML = `<div class="view" style="--dir:${dir}">${html}</div>`;
@@ -901,10 +950,12 @@
       const bar = $card.querySelector('.progress span');
       requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.width = `${pct}%`; }));
       state.prevPct = pct;
+      startClock(q.id);
     }
 
     function renderAnalyzing() {
       state.screen = 'analyzing';
+      state.finishedAt = performance.now();
       const a = CONFIG.analyzing;
       show(`
         <div class="analyzing">
@@ -958,7 +1009,8 @@
       const actions = reject ? `
           <button type="button" class="btn btn-block btn-locked" disabled aria-describedby="apply-note">${ICONS.lock}${esc(c.apply)}</button>
           <p class="apply-note" id="apply-note">${ICONS.alert}<span>${esc(v.applyNote)}</span></p>
-          <button type="button" class="btn btn-block btn-ghost" disabled>${esc(v.review)} <span class="badge">${esc(v.reviewBadge)}</span></button>`
+          <button type="button" class="btn btn-block btn-ghost" disabled>${esc(v.review)} <span class="badge">${esc(v.reviewBadge)}</span></button>
+          <button type="button" class="btn btn-block btn-primary" data-action="finish">${esc(c.continue)}${ICONS.arrowRight}</button>`
         : `<button type="button" class="btn btn-block btn-primary" data-action="apply">${esc(c.apply)}${ICONS.arrowRight}</button>`;
 
       show(`
@@ -1018,75 +1070,25 @@
             <div><dt>${esc(s.roleLabel)}</dt><dd>${esc(CONFIG.company.role)}</dd></div>
             <div><dt>${esc(s.ratingLabel)}</dt><dd>${esc(CONFIG.result[r.verdict].pill)} · ${r.match}% ${esc(CONFIG.result.matchLabel)}</dd></div>
           </dl>
-          <button type="button" class="btn btn-ghost" data-action="home">${esc(s.cta)}</button>
+          <button type="button" class="btn btn-primary" data-action="finish">${esc(s.cta)}${ICONS.arrowRight}</button>
         </div>`);
     }
 
     /* =====================================================================
-       Debrief ("About this study")
+       "About this study" (footer link): neutral note + facilitator tools.
+       It never reveals the twists to participants.
        ===================================================================== */
-    function answerText(q, v) {
-      if (!isAnswered(q, v)) return null;
-      const d = CONFIG.debrief;
-      switch (q.type) {
-        case 'scale': {
-          const label = CONFIG.scaleLabels[v];
-          if (!q.reversed) return label;
-          const side = v >= 4 ? 'left' : v <= 2 ? 'right' : 'middle';
-          return `${label}, ${d.clicked[side]}`;
-        }
-        case 'choice':
-        case 'colour': return q.options[v].label;
-        case 'text': return `“${v.trim()}”`;
-        default: return null;
-      }
-    }
-
     function debriefHTML() {
       const d = CONFIG.debrief;
-      const complete = isComplete();
-      const r = complete ? evaluate() : null;
-      const cell = (text, fallback) => (text ? esc(text) : `<span class="empty">${esc(fallback)}</span>`);
-
-      const fairTile = r
-        ? `<div class="tile"><span class="tile-label">${esc(d.fairLabel)}</span><span class="tile-value">${esc(r.goodFit ? d.goodFit : d.poorFit)}</span><span class="tile-sub">${esc(fill(d.points, { score: r.score, max: r.maxScore }))}</span></div>`
-        : `<div class="tile"><span class="tile-label">${esc(d.fairLabel)}</span><span class="tile-value">${esc(d.notFinished)}</span><span class="tile-sub">${esc(d.notFinishedSub)}</span></div>`;
-      const verdiktTile = r
-        ? `<div class="tile tone-${r.verdict}"><span class="tile-label">${esc(d.verdiktLabel)}</span><span class="tile-value">${esc(CONFIG.result[r.verdict].pill)}</span><span class="tile-sub">${r.match}% ${esc(CONFIG.result.matchLabel)}</span></div>`
-        : `<div class="tile"><span class="tile-label">${esc(d.verdiktLabel)}</span><span class="tile-value">${esc(d.notFinished)}</span><span class="tile-sub">${esc(d.notFinishedSub)}</span></div>`;
-
-      const rows = QUESTIONS.map((q, i) => {
-        const v = state.answers[q.id];
-        const answered = isAnswered(q, v);
-        let heard = heardFor(q, v, r ? r.verdict : null);
-        let heardFallback = d.notAnswered;
-        if (answered && !heard) heardFallback = d.dependsOnVerdict;
-        return `
-          <tr>
-            <td><span class="qnum">Q${i + 1}</span>${esc(q.text)}${q.helper ? ` <span class="muted">(${esc(q.helper)})</span>` : ''}</td>
-            <td data-label="${esc(d.cols.answer)}">${cell(answerText(q, v), d.notAnswered)}</td>
-            <td data-label="${esc(d.cols.heard)}" class="heard">${cell(heard, heardFallback)}</td>
-            <td data-label="${esc(d.cols.twist)}">${esc(q.twist)}</td>
-          </tr>`;
-      }).join('');
-
       return `
         <div class="debrief">
           <h2 id="debrief-title" tabindex="-1">${esc(d.title)}</h2>
           <div class="debrief-intro">${d.intro.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
-          <div class="compare">${fairTile}${verdiktTile}</div>
-          ${r ? `<p class="compare-note">${esc(d.explain[r.verdict])}</p>` : ''}
-          <h3>${esc(d.tableTitle)}</h3>
-          <div class="table-wrap">
-            <table class="debrief-table">
-              <thead><tr><th scope="col">${esc(d.cols.question)}</th><th scope="col">${esc(d.cols.answer)}</th><th scope="col">${esc(d.cols.heard)}</th><th scope="col">${esc(d.cols.twist)}</th></tr></thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </div>
           <div class="debrief-actions">
-            <button type="button" class="btn btn-primary" data-action="restart">${esc(d.restart)}</button>
-            <button type="button" class="btn btn-ghost" data-action="close">${esc(d.close)}</button>
+            <button type="button" class="btn btn-primary" data-action="close">${esc(d.close)}</button>
+            <button type="button" class="btn btn-ghost" data-action="restart">${esc(d.restart)}</button>
           </div>
+          ${facilitatorHTML()}
         </div>`;
     }
 
@@ -1110,10 +1112,228 @@
 
     function restart() {
       clearTimers();
-      state.answers = {};
-      state.index = 0;
+      Object.assign(state, freshState());
       closeDebrief(false);
       renderLanding(-1);
+    }
+
+    /* =====================================================================
+       Study survey (after the result; required) and saved data
+       ===================================================================== */
+    function surveyUI(sq) {
+      const cur = state.survey[sq.id];
+      if (sq.type === 'scale') {
+        return `
+          <div class="seg">
+            ${[1, 2, 3, 4, 5].map((n) => `
+              <label><input type="radio" name="${sq.id}" value="${n}" ${cur === n ? 'checked' : ''}
+                aria-label="${n}${n === 1 ? `, ${esc(sq.low)}` : n === 5 ? `, ${esc(sq.high)}` : ''}"><span class="seg-btn" aria-hidden="true">${n}</span></label>`).join('')}
+          </div>
+          <div class="seg-ends" aria-hidden="true"><span>1 = ${esc(sq.low)}</span><span>5 = ${esc(sq.high)}</span></div>`;
+      }
+      if (sq.type === 'multi') {
+        const picked = Array.isArray(cur) ? cur : [];
+        return `<div class="chips">${sq.options.map((o, k) => `
+          <label class="chip"><input type="checkbox" name="${sq.id}" value="${k}" ${picked.includes(k) ? 'checked' : ''}><span class="chip-btn">${esc(o)}</span></label>`).join('')}</div>`;
+      }
+      if (sq.type === 'single') {
+        return `<div class="choices compact">${sq.options.map((o, k) => `
+          <label class="choice"><input type="radio" name="${sq.id}" value="${k}" ${cur === k ? 'checked' : ''}><span class="choice-mark" aria-hidden="true"></span><span>${esc(o)}</span></label>`).join('')}</div>`;
+      }
+      return `<textarea class="textarea" name="${sq.id}" rows="3" maxlength="${sq.maxLength}" placeholder="${esc(sq.placeholder)}" aria-labelledby="${sq.id}-label">${esc(cur || '')}</textarea>`;
+    }
+
+    function surveyAnswered(sq) {
+      const v = state.survey[sq.id];
+      if (sq.type === 'multi') return Array.isArray(v) && v.length > 0;
+      if (sq.type === 'text') return typeof v === 'string' && v.trim().length > 0;
+      return typeof v === 'number';
+    }
+    const surveyReady = () => SURVEY.every((sq) => !sq.required || surveyAnswered(sq));
+
+    function renderSurvey() {
+      state.screen = 'survey';
+      const s = CONFIG.survey;
+      const ready = surveyReady();
+      show(`
+        <div class="survey-head">
+          <p class="eyebrow">${esc(s.eyebrow)}</p>
+          <h1 tabindex="-1">${esc(s.title)}</h1>
+          <p class="muted">${esc(s.intro)}</p>
+        </div>
+        <form class="survey-form" novalidate>
+          ${SURVEY.map((sq, i) => `
+            <fieldset class="sq">
+              <legend id="${sq.id}-label">${i + 1}. ${esc(sq.text)}</legend>
+              ${surveyUI(sq)}
+            </fieldset>`).join('')}
+          <div class="survey-actions">
+            <button type="submit" class="btn btn-primary btn-block" id="send-btn" ${ready ? '' : 'disabled'}>${esc(s.send)}</button>
+            <p class="survey-hint" id="send-hint" ${ready ? 'hidden' : ''}>${esc(s.hint)}</p>
+          </div>
+        </form>`);
+    }
+
+    function onSurveyInput(e) {
+      const t = e.target;
+      const sq = SURVEY.find((q) => q.id === t.name);
+      if (!sq) return;
+      if (sq.type === 'multi') {
+        state.survey[sq.id] = Array.from($card.querySelectorAll(`input[name="${sq.id}"]:checked`)).map((i) => Number(i.value));
+      } else if (sq.type === 'text') {
+        state.survey[sq.id] = t.value;
+      } else {
+        state.survey[sq.id] = Number(t.value);
+      }
+      const ready = surveyReady();
+      $('#send-btn').disabled = !ready;
+      $('#send-hint').hidden = ready;
+    }
+
+    // One flat row per participant: test result, every test answer, timings and the survey.
+    function buildRecord() {
+      const r = evaluate();
+      const fair = CONFIG.survey.fairLabels;
+      const rec = {
+        response_id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+        submitted_at: new Date().toISOString(),
+        device: window.matchMedia('(pointer: coarse)').matches ? 'touch' : 'mouse',
+        screen_width: window.innerWidth,
+        verdikt_said: CONFIG.result[r.verdict].pill,
+        fair_reading: r.goodFit ? fair.good : fair.poor,
+        fair_score: r.score,
+        match_shown_pct: r.match,
+        applied: state.applied ? 'yes' : 'no',
+        test_time_s: secs(state.finishedAt - state.startedAt)
+      };
+      QUESTIONS.forEach((q) => {
+        const v = state.answers[q.id];
+        if (q.type === 'scale') {
+          rec[`${q.id}_value`] = v;
+          rec[`${q.id}_answer`] = CONFIG.scaleLabels[v];
+        } else if (q.type === 'text') {
+          rec[`${q.id}_answer`] = v.trim();
+          rec[`${q.id}_keyword`] = findKeyword(v, q.keywords);
+        } else {
+          rec[`${q.id}_answer`] = q.options[v].label;
+        }
+        if (isScored(q)) rec[`${q.id}_points`] = pointsFor(q, v);
+        if (q.reversed) rec[`${q.id}_clicked_side`] = v >= 4 ? 'left' : v <= 2 ? 'right' : 'middle';
+        if (typeof q.hiddenAnswer === 'number') rec[`${q.id}_followed_small_print`] = v === q.hiddenAnswer ? 'yes' : 'no';
+        rec[`${q.id}_time_s`] = secs(state.times[q.id] || 0);
+      });
+      SURVEY.forEach((sq) => {
+        const v = state.survey[sq.id];
+        if (sq.type === 'multi') rec[sq.id] = (v || []).map((k) => sq.options[k]).join('; ');
+        else if (sq.type === 'single') rec[sq.id] = typeof v === 'number' ? sq.options[v] : '';
+        else if (sq.type === 'text') rec[sq.id] = (v || '').trim();
+        else rec[sq.id] = typeof v === 'number' ? v : '';
+      });
+      return rec;
+    }
+
+    function readLocal() {
+      try {
+        const rows = JSON.parse(localStorage.getItem(CONFIG.survey.storageKey) || '[]');
+        return Array.isArray(rows) ? rows : [];
+      } catch (err) { return []; }
+    }
+    function writeLocal(rows) {
+      try { localStorage.setItem(CONFIG.survey.storageKey, JSON.stringify(rows)); return true; }
+      catch (err) { return false; }
+    }
+
+    // Always keep a copy on this device; also send to the Google Sheet when an endpoint is set.
+    async function saveRecord(rec) {
+      const savedLocally = writeLocal(readLocal().concat([rec]));
+      const url = (CONFIG.survey.endpoint || '').trim();
+      if (!url) return savedLocally;
+      const ctrl = new AbortController();
+      const timeout = setTimeout(() => ctrl.abort(), 8000);
+      try {
+        await fetch(url, {
+          method: 'POST', mode: 'no-cors', signal: ctrl.signal,
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(rec)
+        });
+        return true;
+      } catch (err) {
+        console.warn('Verdikt: could not reach the Google Sheet. The answers are still saved on this device.', err);
+        return savedLocally;
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    async function submitSurvey() {
+      if (!surveyReady() || !isComplete()) return;
+      const btn = $('#send-btn');
+      btn.disabled = true;
+      btn.textContent = CONFIG.survey.sending;
+      const ok = await saveRecord(buildRecord());
+      renderThanks(ok ? 'saved' : 'failed');
+    }
+
+    function renderThanks(status) {
+      state.screen = 'thanks';
+      const t = CONFIG.thanks;
+      show(`
+        <div class="submitted">
+          <div class="big-check">${ICONS.check}</div>
+          <h1 tabindex="-1">${esc(t.title)}</h1>
+          <p class="muted">${esc(t[status])}</p>
+          <button type="button" class="btn btn-primary" data-action="restart">${esc(t.restart)}</button>
+        </div>`);
+    }
+
+    function toCSV(rows) {
+      const headers = [];
+      rows.forEach((r) => Object.keys(r).forEach((k) => { if (!headers.includes(k)) headers.push(k); }));
+      const cell = (v) => {
+        let s = v === undefined || v === null ? '' : String(v);
+        if (/^[=+\-@]/.test(s)) s = `'${s}`; // stop spreadsheet formula injection from free text
+        return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      };
+      return [headers.map(cell).join(','), ...rows.map((r) => headers.map((h) => cell(r[h])).join(','))].join('\r\n');
+    }
+
+    function downloadCSV() {
+      const rows = readLocal();
+      if (!rows.length) return;
+      const url = URL.createObjectURL(new Blob(['﻿', toCSV(rows)], { type: 'text/csv;charset=utf-8' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `verdikt-responses-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    const responsesLabel = (n) => `${n} ${n === 1 ? 'response' : 'responses'}`;
+
+    function clearLocal(btn) {
+      const n = readLocal().length;
+      if (!btn.dataset.armed) {
+        btn.dataset.armed = '1';
+        btn.textContent = fill(CONFIG.debrief.clearConfirm, { n: responsesLabel(n) });
+        return;
+      }
+      try { localStorage.removeItem(CONFIG.survey.storageKey); } catch (err) { /* storage unavailable */ }
+      const box = $('#facilitator');
+      if (box) box.outerHTML = facilitatorHTML();
+    }
+
+    function facilitatorHTML() {
+      const d = CONFIG.debrief;
+      const n = readLocal().length;
+      const sheet = (CONFIG.survey.endpoint || '').trim() ? d.sheetOn : d.sheetOff;
+      return `
+        <div class="facilitator" id="facilitator">
+          <span class="facilitator-status">${esc(fill(d.facilitator, { n: responsesLabel(n) }))} ${esc(sheet)}</span>
+          <button type="button" class="btn btn-ghost" data-action="download-csv" ${n ? '' : 'disabled'}>${esc(d.download)}</button>
+          <button type="button" class="btn btn-ghost" data-action="clear-data" ${n ? '' : 'disabled'}>${esc(d.clear)}</button>
+        </div>`;
     }
 
     /* =====================================================================
@@ -1123,21 +1343,26 @@
       const el = e.target.closest('[data-action]');
       if (!el || el.disabled) return;
       switch (el.dataset.action) {
-        case 'start': state.index = 0; renderQuestion(1); break;
+        case 'start': state.index = 0; state.startedAt = performance.now(); renderQuestion(1); break;
         case 'back':
+          stopClock();
           if (state.index === 0) renderLanding(-1);
           else { state.index -= 1; renderQuestion(-1); }
           break;
-        case 'apply': renderSubmitted(); break;
+        case 'apply': state.applied = true; renderSubmitted(); break;
         case 'home': restart(); break;
+        case 'finish': renderSurvey(); break;
         case 'about': openDebrief(el); break;
         case 'close': closeDebrief(); break;
         case 'restart': restart(); break;
+        case 'download-csv': downloadCSV(); break;
+        case 'clear-data': clearLocal(el); break;
         default: break;
       }
     });
 
     function onAnswer(e) {
+      if (state.screen === 'survey') { onSurveyInput(e); return; }
       if (state.screen !== 'question') return;
       const q = QUESTIONS[state.index];
       const t = e.target;
@@ -1155,8 +1380,10 @@
 
     $card.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (state.screen === 'survey') { submitSurvey(); return; }
       const q = QUESTIONS[state.index];
       if (!isAnswered(q, state.answers[q.id])) return;
+      stopClock();
       if (state.index < TOTAL - 1) { state.index += 1; renderQuestion(1); }
       else renderAnalyzing();
     });
