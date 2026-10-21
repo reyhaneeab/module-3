@@ -78,8 +78,9 @@ Shown right after the result, before anyone knows about the twists, so it captur
 | `s10_noticed_odd` | Did anything in Verdikt's key factors seem odd or wrong to you? | Yes / Not sure / No | What did they notice? |
 | `s11_what_seemed_odd` | If something seemed odd, what was it? | optional text | What did they notice? |
 | `s12_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Tension / reflection |
-| `s13_changed_view` | Has this made you think differently about AI in hiring? | Yes, a lot / A little / Not at all | Did it create reflection? |
-| `s14_comment` | Anything else you want to tell us? | optional text | |
+| `s13_human_fairer` | Do you think a human recruiter would have given you a fairer verdict than Verdikt? | Yes, a human would be fairer / About the same / No, Verdikt is fairer / Not sure | Trust; agency and responsibility |
+| `s14_changed_view` | Has this made you think differently about AI in hiring? | Yes, a lot / A little / Not at all | Did it create reflection? |
+| `s15_comment` | Anything else you want to tell us? | optional text | |
 
 Everything except the two "(optional)" questions is required; there is no skip option. The survey never mentions "tricks", so it doesn't give the twists away.
 
@@ -100,7 +101,7 @@ When a participant presses **Send answers**, one row is saved with these columns
 | `q1_…` to `q8_…` | For every test question: `_answer`, `_value` (1 to 5 for scales), `_points` (scored ones), `_time_s` (seconds spent) |
 | `q6_followed_small_print` | `yes` if they chose *Rarely* as the hidden instruction asked |
 | `q8_keyword` | The word Verdikt pulled out of their sentence |
-| `s1_what_happened` … `s14_comment` | Survey answers (scales as 1 to 5, options as text, multi-picks joined with `; `) |
+| `s1_what_happened` … `s15_comment` | Survey answers (scales as 1 to 5, options as text, multi-picks joined with `; `) |
 
 No names, emails or IP addresses are collected. Test question 8 and the survey's text answers are free text, so remind participants not to write personal details.
 
@@ -113,12 +114,12 @@ How each prompt from the course's *Test and document* page maps to the data. The
 | Course prompt | Columns to use | What to look at |
 |---|---|---|
 | What did participants do? | `applied`, `clicked_locked_apply`, `clicked_human_review`, `result_time_s`, `q…_time_s`, `s7_wanted_to_do` | Who tried to apply or ask for a human anyway; who lingered on the result; which questions slowed people down |
-| What did they say? | `s1_what_happened`, `s11_what_seemed_odd`, `s14_comment` (+ your notes of what they said out loud) | Group the sentences into themes, e.g. "blamed myself", "blamed the AI", "didn't notice anything" |
+| What did they say? | `s1_what_happened`, `s11_what_seemed_odd`, `s15_comment` (+ your notes of what they said out loud) | Group the sentences into themes, e.g. "blamed myself", "blamed the AI", "didn't notice anything" |
 | What did they notice? | `s10_noticed_odd`, `s11_what_seemed_odd` | Share who flagged the key factors as odd, split by `verdikt_said` |
 | What did they misunderstand? | `s9_confusing_questions`, `q1_answer` (double negative), `q6_followed_small_print`, `q8_keyword` | Compare what people *said* was confusing with where they were actually misled |
 | What surprised them? | `s2_expected_result` vs `verdikt_said`, `s3_feelings` | Expected one verdict but got the other; how often "Surprised" or "Confused" was picked |
 | What surprised you? | All of the above + your notes | Write this as a group after testing: results that didn't match your expectations |
-| Did the intervention create the tension or reflection you expected? | `s4_fairness`, `s5_trust`, `s6_explanation`, `s8_responsible`, `s12_accept_real`, `s13_changed_view`, split by `fair_reading` | Did good-fit participants who were rejected still trust Verdikt or blame themselves? Did people find the explanation convincing even when it was nonsense? |
+| Did the intervention create the tension or reflection you expected? | `s4_fairness`, `s5_trust`, `s6_explanation`, `s8_responsible`, `s12_accept_real`, `s13_human_fairer`, `s14_changed_view`, split by `fair_reading` | Did good-fit participants who were rejected still trust Verdikt or blame themselves? Did people find the explanation convincing even when it was nonsense? Do people who were wrongly welcomed think a human would be fairer as often as those who were wrongly rejected? |
 
 **Observation notes.** During each session, one group member writes down what the participant does and says out loud: hesitations, laughs, comments, re-reading a question. Note the `response_id` row's time (`submitted_at`) next to your notes so you can match them later. That covers "What did they do / say" better than any survey question.
 
