@@ -22,7 +22,7 @@ The questions are worded so people misread them, and the "AI" explains every ver
    |---|---|---|
    | 1 | Double negative | yes |
    | 2 | Idiom read literally ("under fire") | yes |
-   | 3 | 1 to 5 scale silently reversed | yes |
+   | 3 | TikTok habit treated as a job signal; Verdikt reads it as a distraction risk (fair reading: more TikTok = better fit) | yes |
    | 4 | Colour preference used as a fake predictor | no |
    | 5 | Honesty punished | yes |
    | 6 | Hidden attention check in small print | yes |
@@ -75,7 +75,7 @@ Shown right after the result, before anyone knows about the twists, so it captur
 | `s7_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Trust |
 | `s8_comment` | Anything else you want to tell us? | optional text | |
 
-Questions 1 to 7 are required; there is no skip option. Question 6 asks about confusion rather than "tricks" so it doesn't give the twist away; compare it with `q3_clicked_side` and `q6_followed_small_print` to see who was misled without noticing.
+Questions 1 to 7 are required; there is no skip option. Question 6 asks about confusion rather than "tricks" so it doesn't give the twist away; compare it with `q6_followed_small_print` to see who was misled without noticing.
 
 ---
 
@@ -90,7 +90,6 @@ When a participant presses **Send answers**, one row is saved with these columns
 | `verdikt_said`, `fair_reading`, `fair_score`, `match_shown_pct`, `applied` | The verdict shown, the fair reading (Good/Poor fit, 0 to 12), the match % shown, and whether they pressed Apply |
 | `test_time_s` | Seconds from *Start assessment* to the last answer |
 | `q1_…` to `q8_…` | For every test question: `_answer`, `_value` (1 to 5 for scales), `_points` (scored ones), `_time_s` (seconds spent) |
-| `q3_clicked_side` | `left` / `right` / `middle` on the reversed scale (right = likely fell for the trick) |
 | `q6_followed_small_print` | `yes` if they chose *Rarely* as the hidden instruction asked |
 | `q8_keyword` | The word Verdikt pulled out of their sentence |
 | `s1_fairness` … `s8_comment` | Survey answers (scales as 1 to 5, options as text, feelings joined with `; `) |

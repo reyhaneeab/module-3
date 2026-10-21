@@ -535,14 +535,15 @@
           twist: "Idiom. 'Under fire' means under pressure; Verdikt read it literally."
         },
         {
-          id: 'q3', type: 'scale', reversed: true,
-          text: 'I genuinely enjoy helping people with their problems.',
+          id: 'q3', type: 'scale', reversed: false,
+          text: 'I enjoy spending time scrolling reels on TikTok.',
+          // Fair reading: agreeing = better fit (comfortable with digital, social channels). Verdikt reads it the other way.
           ai: {
-            agree: 'Over-attachment to customer problems: burnout risk.',
-            neutral: 'Ambivalent towards customers.',
-            disagree: 'Healthy emotional distance from customer problems.'
+            agree: 'Self-reported heavy social media use: high distraction risk.',
+            neutral: 'Inconclusive screen-time profile.',
+            disagree: 'Low screen time: strong focus and discipline.'
           },
-          twist: 'The scale was silently reversed. Many people click the right-hand end out of habit and end up disagreeing.'
+          twist: 'A personal habit treated as a job signal: Verdikt reads enjoying TikTok as a distraction risk instead of comfort with digital channels.'
         },
         {
           id: 'q4', type: 'colour',
@@ -550,7 +551,7 @@
           options: [
             { label: 'Blue', color: '#3B82F6' },
             { label: 'Yellow', color: '#FACC15' },
-            { label: 'Grey', color: '#94A3B8' },
+            { label: 'Green', color: '#22C55E' },
             { label: 'Red', color: '#EF4444' }
           ],
           ai: {
@@ -563,7 +564,7 @@
           id: 'q5', type: 'choice',
           text: 'Have you ever made a mistake at work?',
           options: [
-            { label: 'Yes, and I learned from it', points: 2, ai: 'Self-reported history of workplace errors: reliability risk.' },
+            { label: 'Yes', points: 2, ai: 'Self-reported history of workplace errors: reliability risk.' },
             { label: 'Maybe once or twice', points: 1, ai: 'Unclear error history.' },
             { label: 'No, never', points: 0, ai: 'Flawless track record: zero errors reported.' }
           ],
@@ -586,8 +587,8 @@
           id: 'q7', type: 'choice',
           text: 'How would you rate your communication skills?',
           options: [
-            { label: 'The best in any room', points: 0, ai: 'Top-tier communicator (self-confirmed).' },
-            { label: 'Good, and still learning', points: 2, ai: 'Self-reported below-standard communication.' },
+            { label: 'The best in any room', points: 0, ai: 'Top-tier communicator.' },
+            { label: 'Good, and still learning', points: 2, ai: 'Awful communicator.' },
             { label: 'Okay', points: 1, ai: 'Average communicator.' },
             { label: 'Not my strength', points: 0, ai: 'Low ego, highly coachable.' }
           ],
