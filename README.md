@@ -62,20 +62,26 @@ To see both paths: answer once as an ideal candidate (expect "Not suitable") and
 
 ## Study survey
 
-Shown right after the result, before anyone knows about the twists, so it captures the unbiased reaction.
+Shown right after the result, before anyone knows about the twists, so it captures the unbiased reaction. It takes about 2 minutes. The open question comes first so the closed ones can't put words in people's mouths.
 
-| ID | Question | Answer type | Lens |
+| ID | Question | Answer type | Course prompt / lens |
 |---|---|---|---|
-| `s1_fairness` | How fair does Verdikt's decision feel to you? | 1 to 5 (very unfair to very fair) | Trust |
-| `s2_trust` | How much do you trust Verdikt's assessment of you? | 1 to 5 | Trust |
-| `s3_explanation` | Did Verdikt's "key factors" make the decision feel more convincing? | 1 to 5 | Epistemic character |
-| `s4_feelings` | How did you feel when you saw your result? | pick any of 7 | (emotional response) |
-| `s5_responsible` | Who do you think is responsible for the decision you got? | one of 5 | Agency and responsibility |
-| `s6_confusing` | Did any of the questions feel confusing or unclear? | Yes, several / One or two / None | Uncertainty and ambiguity |
-| `s7_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Trust |
-| `s8_comment` | Anything else you want to tell us? | optional text | |
+| `s1_what_happened` | In one or two sentences: what do you think just happened? | text, required (5+ characters) | What did they say? |
+| `s2_expected_result` | Before you saw the result, what did you expect Verdikt to say? | Suitable / Not suitable / I was not sure | What surprised them? |
+| `s3_feelings` | How did you feel when you saw your result? | pick any of 8 | What surprised them? |
+| `s4_fairness` | How fair does Verdikt's decision feel to you? | 1 to 5 | Tension: trust |
+| `s5_trust` | How much do you trust Verdikt's assessment of you? | 1 to 5 | Tension: trust |
+| `s6_explanation` | Did Verdikt's "key factors" make the decision feel more convincing? | 1 to 5 | Tension: epistemic character |
+| `s7_wanted_to_do` | What did you want to do when you saw your result? | one of 6 | What did they do? (agency) |
+| `s8_responsible` | Who do you think is responsible for the decision you got? | one of 5 | Agency and responsibility |
+| `s9_confusing_questions` | Which questions felt confusing or unclear? | pick any, or "None of them" | What did they misunderstand? |
+| `s10_noticed_odd` | Did anything in Verdikt's key factors seem odd or wrong to you? | Yes / Not sure / No | What did they notice? |
+| `s11_what_seemed_odd` | If something seemed odd, what was it? | optional text | What did they notice? |
+| `s12_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Tension / reflection |
+| `s13_changed_view` | Has this made you think differently about AI in hiring? | Yes, a lot / A little / Not at all | Did it create reflection? |
+| `s14_comment` | Anything else you want to tell us? | optional text | |
 
-Questions 1 to 7 are required; there is no skip option. Question 6 asks about confusion rather than "tricks" so it doesn't give the twist away; compare it with `q6_followed_small_print` to see who was misled without noticing.
+Everything except the two "(optional)" questions is required; there is no skip option. The survey never mentions "tricks", so it doesn't give the twists away.
 
 ---
 
@@ -89,12 +95,34 @@ When a participant presses **Send answers**, one row is saved with these columns
 | `device`, `screen_width` | `touch` or `mouse`, and window width in px |
 | `verdikt_said`, `fair_reading`, `fair_score`, `match_shown_pct`, `applied` | The verdict shown, the fair reading (Good/Poor fit, 0 to 12), the match % shown, and whether they pressed Apply |
 | `test_time_s` | Seconds from *Start assessment* to the last answer |
+| `result_time_s` | Seconds spent on the result screen before pressing *Continue* or *Apply now* |
+| `clicked_locked_apply`, `clicked_human_review` | How many times a rejected participant tried the locked *Apply now* button or the unavailable *Request human review* button |
 | `q1_…` to `q8_…` | For every test question: `_answer`, `_value` (1 to 5 for scales), `_points` (scored ones), `_time_s` (seconds spent) |
 | `q6_followed_small_print` | `yes` if they chose *Rarely* as the hidden instruction asked |
 | `q8_keyword` | The word Verdikt pulled out of their sentence |
-| `s1_fairness` … `s8_comment` | Survey answers (scales as 1 to 5, options as text, feelings joined with `; `) |
+| `s1_what_happened` … `s14_comment` | Survey answers (scales as 1 to 5, options as text, multi-picks joined with `; `) |
 
-No names, emails or IP addresses are collected. Question 8 and the comment are free text, so remind participants not to write personal details.
+No names, emails or IP addresses are collected. Test question 8 and the survey's text answers are free text, so remind participants not to write personal details.
+
+---
+
+## Analysis guide
+
+How each prompt from the course's *Test and document* page maps to the data. The first five come from participants; the last two are your group's reflection, built on the same data plus your observation notes.
+
+| Course prompt | Columns to use | What to look at |
+|---|---|---|
+| What did participants do? | `applied`, `clicked_locked_apply`, `clicked_human_review`, `result_time_s`, `q…_time_s`, `s7_wanted_to_do` | Who tried to apply or ask for a human anyway; who lingered on the result; which questions slowed people down |
+| What did they say? | `s1_what_happened`, `s11_what_seemed_odd`, `s14_comment` (+ your notes of what they said out loud) | Group the sentences into themes, e.g. "blamed myself", "blamed the AI", "didn't notice anything" |
+| What did they notice? | `s10_noticed_odd`, `s11_what_seemed_odd` | Share who flagged the key factors as odd, split by `verdikt_said` |
+| What did they misunderstand? | `s9_confusing_questions`, `q1_answer` (double negative), `q6_followed_small_print`, `q8_keyword` | Compare what people *said* was confusing with where they were actually misled |
+| What surprised them? | `s2_expected_result` vs `verdikt_said`, `s3_feelings` | Expected one verdict but got the other; how often "Surprised" or "Confused" was picked |
+| What surprised you? | All of the above + your notes | Write this as a group after testing: results that didn't match your expectations |
+| Did the intervention create the tension or reflection you expected? | `s4_fairness`, `s5_trust`, `s6_explanation`, `s8_responsible`, `s12_accept_real`, `s13_changed_view`, split by `fair_reading` | Did good-fit participants who were rejected still trust Verdikt or blame themselves? Did people find the explanation convincing even when it was nonsense? |
+
+**Observation notes.** During each session, one group member writes down what the participant does and says out loud: hesitations, laughs, comments, re-reading a question. Note the `response_id` row's time (`submitted_at`) next to your notes so you can match them later. That covers "What did they do / say" better than any survey question.
+
+**Before real testing starts,** delete everything in the Google Sheet, including the header row. The questions have changed, so the script will rebuild clean headers on the first real response.
 
 ---
 

@@ -154,7 +154,12 @@
     .btn-ghost { background: var(--surface); color: var(--ink-2); border-color: var(--line); }
     .btn-ghost:hover:not(:disabled) { background: var(--surface-2); border-color: var(--line-2); }
     .btn-ghost:active:not(:disabled) { transform: scale(.985); }
-    .btn-ghost:disabled { cursor: not-allowed; color: #94A3B8; background: var(--surface-2); }
+    .btn-ghost:disabled, .btn-ghost[aria-disabled="true"], .btn-ghost[aria-disabled="true"]:hover {
+      cursor: not-allowed; color: #94A3B8; background: var(--surface-2); border-color: var(--line); transform: none;
+    }
+    .shake { animation: shake .35s var(--ease); }
+    @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+    .textarea.textarea-sm { min-height: 84px; }
     .btn-locked { background: #F1F5F9; color: #64748B; border: 1px dashed var(--line-2); cursor: not-allowed; }
     .btn:focus-visible, .link-btn:focus-visible, .icon-btn:focus-visible {
       outline: 3px solid var(--ring); outline-offset: 2px;
@@ -679,22 +684,37 @@
         // Paste your Google Apps Script web app URL between the quotes to also send answers to a Google Sheet (see README).
         endpoint: 'https://script.google.com/macros/s/AKfycbws4MZMeEF9Tke0oyoLvAz13LTNL5TVJ2Ju9qz5vUVdcl0jAzRMx24g71BYkdeZcVvHsg/exec',
         storageKey: 'verdikt-study-responses',
-        eyebrow: 'TIA400 study · about 1 minute',
+        eyebrow: 'TIA400 study · about 2 minutes',
         title: 'A few questions about your experience',
         intro: 'Before you finish, please tell us how this felt. Your answers are anonymous and are saved together with your test answers for our course analysis.',
-        hint: 'Answer questions 1 to 7 to send. Question 8 is optional.',
+        hint: 'Answer every question to send. Questions marked (optional) can be left empty.',
         send: 'Send answers',
         sending: 'Sending...',
         fairLabels: { good: 'Good fit', poor: 'Poor fit' }, // saved in the data only, never shown
+        // Each question is tagged with the course "Test and document" prompt it answers (see README, Analysis guide).
+        // The open question comes first so the closed ones can't prime it.
         questions: [
-          { id: 's1_fairness', type: 'scale', text: "How fair does Verdikt's decision feel to you?", low: 'Very unfair', high: 'Very fair', required: true },
-          { id: 's2_trust', type: 'scale', text: "How much do you trust Verdikt's assessment of you?", low: 'Not at all', high: 'Completely', required: true },
-          { id: 's3_explanation', type: 'scale', text: "Did Verdikt's \"key factors\" make the decision feel more convincing?", low: 'Not at all', high: 'Very much', required: true },
-          { id: 's4_feelings', type: 'multi', text: 'How did you feel when you saw your result? Pick any.', options: ['Frustrated', 'Confused', 'Surprised', 'Indifferent', 'Relieved', 'Proud', 'Suspicious'], required: true },
-          { id: 's5_responsible', type: 'single', text: 'Who do you think is responsible for the decision you got?', options: ['The AI system', 'The company using it (Brightwave)', 'The people who built Verdikt', 'Me and my answers', 'No one'], required: true },
-          { id: 's6_confusing', type: 'single', text: 'Did any of the questions feel confusing or unclear?', options: ['Yes, several', 'One or two', 'None'], required: true },
-          { id: 's7_accept_real', type: 'scale', text: 'Would you accept an AI like this screening you in a real job application?', low: 'Definitely not', high: 'Definitely yes', required: true },
-          { id: 's8_comment', type: 'text', text: 'Anything else you want to tell us? (optional)', placeholder: 'Optional', maxLength: 500, required: false }
+          // What did they say?
+          { id: 's1_what_happened', type: 'text', text: 'In one or two sentences: what do you think just happened?', placeholder: 'Type your answer', minLength: 5, maxLength: 300, required: true },
+          // What surprised them? (compare with verdikt_said)
+          { id: 's2_expected_result', type: 'single', text: 'Before you saw the result, what did you expect Verdikt to say?', options: ['Suitable', 'Not suitable', 'I was not sure'], required: true },
+          { id: 's3_feelings', type: 'multi', text: 'How did you feel when you saw your result? Pick any.', options: ['Frustrated', 'Confused', 'Surprised', 'Indifferent', 'Relieved', 'Proud', 'Suspicious', 'Amused'], required: true },
+          // Tension: trust and fairness
+          { id: 's4_fairness', type: 'scale', text: "How fair does Verdikt's decision feel to you?", low: 'Very unfair', high: 'Very fair', required: true },
+          { id: 's5_trust', type: 'scale', text: "How much do you trust Verdikt's assessment of you?", low: 'Not at all', high: 'Completely', required: true },
+          { id: 's6_explanation', type: 'scale', text: "Did Verdikt's \"key factors\" make the decision feel more convincing?", low: 'Not at all', high: 'Very much', required: true },
+          // What did they do, or want to do but could not?
+          { id: 's7_wanted_to_do', type: 'single', text: 'What did you want to do when you saw your result?', options: ['Accept it and move on', 'Apply anyway', 'Retake the test with different answers', 'Ask a person to review it', 'Challenge or question the decision', 'Nothing in particular'], required: true },
+          { id: 's8_responsible', type: 'single', text: 'Who do you think is responsible for the decision you got?', options: ['The AI system', 'The company using it (Brightwave)', 'The people who built Verdikt', 'Me and my answers', 'No one'], required: true },
+          // What did they misunderstand?
+          { id: 's9_confusing_questions', type: 'multi', text: 'Which questions felt confusing or unclear? Pick any.', options: ['Losing patience with customers', 'Performing under fire', 'Scrolling TikTok', 'Monday colour', 'Mistakes at work', 'Working in a team', 'Communication skills', 'Calming an angry customer', 'None of them'], exclusive: 8, required: true },
+          // What did they notice?
+          { id: 's10_noticed_odd', type: 'single', text: "Did anything in Verdikt's key factors seem odd or wrong to you?", options: ['Yes', 'Not sure', 'No'], required: true },
+          { id: 's11_what_seemed_odd', type: 'text', text: 'If something seemed odd, what was it? (optional)', placeholder: 'Optional', maxLength: 300, required: false },
+          // Did it create the tension or reflection we expected?
+          { id: 's12_accept_real', type: 'scale', text: 'Would you accept an AI like this screening you in a real job application?', low: 'Definitely not', high: 'Definitely yes', required: true },
+          { id: 's13_changed_view', type: 'single', text: 'Has this made you think differently about AI in hiring?', options: ['Yes, a lot', 'A little', 'Not at all'], required: true },
+          { id: 's14_comment', type: 'text', text: 'Anything else you want to tell us? (optional)', placeholder: 'Optional', maxLength: 500, required: false }
         ]
       },
 
@@ -736,7 +756,8 @@
     const SURVEY = CONFIG.survey.questions;
     const freshState = () => ({
       screen: 'landing', index: 0, answers: {}, prevPct: 0, timers: [], raf: 0, lastFocus: null,
-      times: {}, clock: null, startedAt: 0, finishedAt: 0, applied: false, survey: {}
+      times: {}, clock: null, startedAt: 0, finishedAt: 0, applied: false, survey: {},
+      resultShownAt: 0, resultLeftAt: 0, lockedApplyClicks: 0, reviewClicks: 0
     });
     const state = freshState();
 
@@ -769,6 +790,16 @@
       state.clock = null;
     }
     const secs = (ms) => Math.round(ms / 100) / 10;
+
+    // What people do on the result screen, saved with the study data
+    function leaveResult() {
+      if (state.screen === 'result' && !state.resultLeftAt) state.resultLeftAt = performance.now();
+    }
+    function nudge(el) {
+      el.classList.remove('shake');
+      void el.offsetWidth; // restart the animation
+      el.classList.add('shake');
+    }
 
     function show(html, dir = 1, focus = true) {
       $card.innerHTML = `<div class="view" style="--dir:${dir}">${html}</div>`;
@@ -1009,14 +1040,15 @@
 
     function renderResult() {
       state.screen = 'result';
+      state.resultShownAt = performance.now();
       const r = evaluate();
       const c = CONFIG.result;
       const v = c[r.verdict];
       const reject = r.verdict === 'reject';
       const actions = reject ? `
-          <button type="button" class="btn btn-block btn-locked" disabled aria-describedby="apply-note">${ICONS.lock}${esc(c.apply)}</button>
+          <button type="button" class="btn btn-block btn-locked" aria-disabled="true" data-action="locked-apply" aria-describedby="apply-note">${ICONS.lock}${esc(c.apply)}</button>
           <p class="apply-note" id="apply-note">${ICONS.alert}<span>${esc(v.applyNote)}</span></p>
-          <button type="button" class="btn btn-block btn-ghost" disabled>${esc(v.review)} <span class="badge">${esc(v.reviewBadge)}</span></button>
+          <button type="button" class="btn btn-block btn-ghost" aria-disabled="true" data-action="locked-review">${esc(v.review)} <span class="badge">${esc(v.reviewBadge)}</span></button>
           <button type="button" class="btn btn-block btn-primary" data-action="finish">${esc(c.continue)}${ICONS.arrowRight}</button>`
         : `<button type="button" class="btn btn-block btn-primary" data-action="apply">${esc(c.apply)}${ICONS.arrowRight}</button>`;
 
@@ -1147,13 +1179,13 @@
         return `<div class="choices compact">${sq.options.map((o, k) => `
           <label class="choice"><input type="radio" name="${sq.id}" value="${k}" ${cur === k ? 'checked' : ''}><span class="choice-mark" aria-hidden="true"></span><span>${esc(o)}</span></label>`).join('')}</div>`;
       }
-      return `<textarea class="textarea" name="${sq.id}" rows="3" maxlength="${sq.maxLength}" placeholder="${esc(sq.placeholder)}" aria-labelledby="${sq.id}-label">${esc(cur || '')}</textarea>`;
+      return `<textarea class="textarea textarea-sm" name="${sq.id}" rows="2" maxlength="${sq.maxLength}" placeholder="${esc(sq.placeholder)}" aria-labelledby="${sq.id}-label">${esc(cur || '')}</textarea>`;
     }
 
     function surveyAnswered(sq) {
       const v = state.survey[sq.id];
       if (sq.type === 'multi') return Array.isArray(v) && v.length > 0;
-      if (sq.type === 'text') return typeof v === 'string' && v.trim().length > 0;
+      if (sq.type === 'text') return typeof v === 'string' && v.trim().length >= (sq.minLength || 1);
       return typeof v === 'number';
     }
     const surveyReady = () => SURVEY.every((sq) => !sq.required || surveyAnswered(sq));
@@ -1186,7 +1218,16 @@
       const sq = SURVEY.find((q) => q.id === t.name);
       if (!sq) return;
       if (sq.type === 'multi') {
-        state.survey[sq.id] = Array.from($card.querySelectorAll(`input[name="${sq.id}"]:checked`)).map((i) => Number(i.value));
+        const boxes = Array.from($card.querySelectorAll(`input[name="${sq.id}"]`));
+        // An "exclusive" option (e.g. "None of them") can't be combined with the others.
+        if (t.checked && typeof sq.exclusive === 'number') {
+          const pickedExclusive = Number(t.value) === sq.exclusive;
+          boxes.forEach((b) => {
+            const isExclusive = Number(b.value) === sq.exclusive;
+            if (pickedExclusive ? !isExclusive : isExclusive) b.checked = false;
+          });
+        }
+        state.survey[sq.id] = boxes.filter((b) => b.checked).map((b) => Number(b.value));
       } else if (sq.type === 'text') {
         state.survey[sq.id] = t.value;
       } else {
@@ -1211,7 +1252,10 @@
         fair_score: r.score,
         match_shown_pct: r.match,
         applied: state.applied ? 'yes' : 'no',
-        test_time_s: secs(state.finishedAt - state.startedAt)
+        test_time_s: secs(state.finishedAt - state.startedAt),
+        result_time_s: secs((state.resultLeftAt || performance.now()) - state.resultShownAt),
+        clicked_locked_apply: state.lockedApplyClicks,
+        clicked_human_review: state.reviewClicks
       };
       QUESTIONS.forEach((q) => {
         const v = state.answers[q.id];
@@ -1356,9 +1400,11 @@
           if (state.index === 0) renderLanding(-1);
           else { state.index -= 1; renderQuestion(-1); }
           break;
-        case 'apply': state.applied = true; renderSubmitted(); break;
+        case 'apply': leaveResult(); state.applied = true; renderSubmitted(); break;
+        case 'locked-apply': state.lockedApplyClicks += 1; nudge(el); break;
+        case 'locked-review': state.reviewClicks += 1; nudge(el); break;
         case 'home': restart(); break;
-        case 'finish': renderSurvey(); break;
+        case 'finish': leaveResult(); renderSurvey(); break;
         case 'about': openDebrief(el); break;
         case 'close': closeDebrief(); break;
         case 'restart': restart(); break;
