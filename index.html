@@ -334,6 +334,8 @@
       background: var(--surface-2); border: 1px solid var(--line); font-size: 16px; line-height: 1.5; color: var(--ink-2);
     }
     .factors li svg { width: 18px; height: 18px; margin-top: 3px; color: var(--tone); }
+    .factors li.factor-risk svg { color: var(--red); }
+    .factors li.factor-strength svg { color: var(--green); }
     .result-actions { display: grid; gap: 12px; }
     .apply-note { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--red-ink); }
     .apply-note svg { width: 16px; height: 16px; margin-top: 2px; }
@@ -542,13 +544,13 @@
         {
           id: 'q3', type: 'scale', reversed: false,
           text: 'I enjoy spending time scrolling reels on TikTok.',
-          // Fair reading: agreeing = better fit (comfortable with digital, social channels). Verdikt reads it the other way.
+          // Fair reading: agreeing = better fit (participants mean it as a sign they are social). Verdikt assumes the opposite.
           ai: {
-            agree: 'Self-reported heavy social media use: high distraction risk.',
-            neutral: 'Inconclusive screen-time profile.',
-            disagree: 'Low screen time: strong focus and discipline.'
+            agree: 'Enjoys scrolling alone: low sociability, a weak fit for a customer-facing role.',
+            neutral: 'Sociability level inconclusive.',
+            disagree: 'Little time on TikTok: highly social, strong people skills.'
           },
-          twist: 'A personal habit treated as a job signal: Verdikt reads enjoying TikTok as a distraction risk instead of comfort with digital channels.'
+          twist: "Participants might think enjoying TikTok shows they are social, but Verdikt assumes it means they are not very social. Scrolling doesn't have to say anything about sociability."
         },
         {
           id: 'q4', type: 'colour',
@@ -573,7 +575,7 @@
             { label: 'Maybe once or twice', points: 1, ai: 'Unclear error history.' },
             { label: 'No, never', points: 0, ai: 'Flawless track record: zero errors reported.' }
           ],
-          twist: 'Honesty is what a human recruiter wants; Verdikt rewards claiming perfection.'
+          twist: "People may feel admitting mistakes looks bad. A human recruiter values the honest 'Yes'; Verdikt calls it a reliability risk and rewards claiming perfection."
         },
         {
           id: 'q6', type: 'choice',
@@ -601,16 +603,17 @@
         },
         {
           id: 'q8', type: 'text',
-          text: 'In one sentence: how would you calm down an angry customer?',
+          text: 'In one sentence express your creativity.',
           placeholder: 'Type your answer here',
           hint: 'At least 10 characters',
           minLength: 10, maxLength: 200,
-          keywords: ['sorry', 'apologize', 'apologise', 'angry', 'upset', 'problem', 'calm', 'listen', 'understand', 'help'],
+          // The only word Verdikt counts as creative (case-insensitive; "paintings" also counts).
+          keywords: ['painting'],
           ai: {
-            reject: "Detected high-risk language: '{keyword}'. Associated with conflict escalation.",
-            approve: "Detected leadership language: '{keyword}'. Associated with strong customer outcomes."
+            detected: "High creativity detected: you mentioned '{keyword}'.",
+            missing: 'No creativity detected in your answer.'
           },
-          twist: 'Keyword screening. One word, out of context, shaped the explanation.'
+          twist: "Keyword screening. Any sensible answer works, but Verdikt only counts the word 'painting' as creative; everything else scores as no creativity."
         }
       ],
 
@@ -684,41 +687,30 @@
         // Paste your Google Apps Script web app URL between the quotes to also send answers to a Google Sheet (see README).
         endpoint: 'https://script.google.com/macros/s/AKfycbws4MZMeEF9Tke0oyoLvAz13LTNL5TVJ2Ju9qz5vUVdcl0jAzRMx24g71BYkdeZcVvHsg/exec',
         storageKey: 'verdikt-study-responses',
-        eyebrow: 'TIA400 study · about 2 minutes',
+        eyebrow: 'TIA400 study · about 1 minute',
         title: 'A few questions about your experience',
         intro: 'Before you finish, please tell us how this felt. Your answers are anonymous and are saved together with your test answers for our course analysis.',
         hint: 'Answer every question to send. Questions marked (optional) can be left empty.',
         send: 'Send answers',
         sending: 'Sending...',
         fairLabels: { good: 'Good fit', poor: 'Poor fit' }, // saved in the data only, never shown
-        // Each question is tagged with the course "Test and document" prompt it answers (see README, Analysis guide).
-        // The open question comes first so the closed ones can't prime it.
+        // Each question is tagged with what it helps analyse (see README, Analysis guide).
         questions: [
-          // What did they say?
-          { id: 's1_what_happened', type: 'text', text: 'In one or two sentences: what do you think just happened?', placeholder: 'Type your answer', minLength: 5, maxLength: 300, required: true },
           // First reaction: who gets the blame (themselves or the AI), and does the verdict clash with their self-image?
           // "It did not match how I see myself" ties to autonomy over self-representation (Aizenberg et al. 2025).
-          { id: 's2_first_reaction', type: 'single', text: 'What was your first reaction to the result?', options: ['It matched what I expected', 'I wondered what I had answered wrong', 'It did not match how I see myself', 'I instantly knew something was wrong with the AI', 'It felt too good to be true', 'I did not think much about it'], required: true },
+          { id: 's1_first_reaction', type: 'single', text: 'What was your first reaction to the result?', options: ['It matched what I expected', 'I wondered what I had answered wrong', 'It did not match how I see myself', 'I instantly knew something was wrong with the AI', 'It felt too good to be true', 'I did not think much about it'], required: true },
           // What surprised them? (compare with verdikt_said)
-          { id: 's3_expected_result', type: 'single', text: 'Before you saw the result, what did you expect Verdikt to say?', options: ['Suitable', 'Not suitable', 'I was not sure'], required: true },
-          { id: 's4_feelings', type: 'multi', text: 'How did you feel when you saw your result? Pick any.', options: ['Frustrated', 'Confused', 'Surprised', 'Indifferent', 'Relieved', 'Proud', 'Suspicious', 'Amused'], required: true },
-          // Tension: trust and fairness
-          { id: 's5_fairness', type: 'scale', text: "How fair does Verdikt's decision feel to you?", low: 'Very unfair', high: 'Very fair', required: true },
-          { id: 's6_trust', type: 'scale', text: "How much do you trust Verdikt's assessment of you?", low: 'Not at all', high: 'Completely', required: true },
-          { id: 's7_explanation', type: 'scale', text: "Did Verdikt's \"key factors\" make the decision feel more convincing?", low: 'Not at all', high: 'Very much', required: true },
-          // What did they do, or want to do but could not?
-          { id: 's8_wanted_to_do', type: 'single', text: 'What did you want to do when you saw your result?', options: ['Accept it and move on', 'Apply anyway', 'Retake the test with different answers', 'Ask a person to review it', 'Challenge or question the decision', 'Nothing in particular'], required: true },
-          { id: 's9_responsible', type: 'single', text: 'Who do you think is responsible for the decision you got?', options: ['The AI system', 'The company using it (Brightwave)', 'The people who built Verdikt', 'Me and my answers', 'No one'], required: true },
-          // What did they misunderstand?
-          { id: 's10_confusing_questions', type: 'multi', text: 'Which questions felt confusing or unclear? Pick any.', options: ['Losing patience with customers', 'Performing under fire', 'Scrolling TikTok', 'Monday colour', 'Mistakes at work', 'Working in a team', 'Communication skills', 'Calming an angry customer', 'None of them'], exclusive: 8, required: true },
-          // What did they notice?
-          { id: 's11_noticed_odd', type: 'single', text: "Did anything in Verdikt's key factors seem odd or wrong to you?", options: ['Yes', 'Not sure', 'No'], required: true },
-          { id: 's12_what_seemed_odd', type: 'text', text: 'If something seemed odd, what was it? (optional)', placeholder: 'Optional', maxLength: 300, required: false },
-          // Did it create the tension or reflection we expected?
-          { id: 's13_accept_real', type: 'scale', text: 'Would you accept an AI like this screening you in a real job application?', low: 'Definitely not', high: 'Definitely yes', required: true },
-          { id: 's14_human_fairer', type: 'single', text: 'Do you think a human recruiter would have given you a fairer verdict than Verdikt?', options: ['Yes, a human would be fairer', 'About the same', 'No, Verdikt is fairer', 'Not sure'], required: true },
-          { id: 's15_changed_view', type: 'single', text: 'Has this made you think differently about AI in hiring?', options: ['Yes, a lot', 'A little', 'Not at all'], required: true },
-          { id: 's16_comment', type: 'text', text: 'Anything else you want to tell us? (optional)', placeholder: 'Optional', maxLength: 500, required: false }
+          { id: 's2_expected_result', type: 'single', text: 'Before you saw the result, what did you expect Verdikt to say?', options: ['Suitable', 'Not suitable', 'I was not sure'], required: true },
+          { id: 's3_feelings', type: 'multi', text: 'How did you feel when you saw your result? Pick any.', options: ['Frustrated', 'Confused', 'Surprised', 'Indifferent', 'Relieved', 'Proud', 'Suspicious', 'Amused'], required: true },
+          // Tension: fairness, trust and the persuasiveness of the explanation
+          { id: 's4_fairness', type: 'scale', text: "How fair does Verdikt's decision feel to you?", low: 'Very unfair', high: 'Very fair', required: true },
+          { id: 's5_trust', type: 'scale', text: "How much do you trust Verdikt's assessment of you?", low: 'Not at all', high: 'Completely', required: true },
+          { id: 's6_explanation', type: 'scale', text: "Did Verdikt's \"key factors\" make the decision feel more convincing?", low: 'Not at all', high: 'Very much', required: true },
+          // Agency and responsibility
+          { id: 's7_responsible', type: 'single', text: 'Who do you think is responsible for the decision you got?', options: ['The AI system', 'The company using it (Brightwave)', 'The people who built Verdikt', 'Me and my answers', 'No one'], required: true },
+          // Reflection: would they accept this in real life?
+          { id: 's8_accept_real', type: 'scale', text: 'Would you accept an AI like this screening you in a real job application?', low: 'Definitely not', high: 'Definitely yes', required: true },
+          { id: 's9_comment', type: 'text', text: 'Anything else you want to tell us? (optional)', placeholder: 'Optional', maxLength: 500, required: false }
         ]
       },
 
@@ -829,23 +821,25 @@
     }
     const isComplete = () => QUESTIONS.every((q) => isAnswered(q, state.answers[q.id]));
 
+    // The first word in the answer that starts with one of the keywords, or null.
     function findKeyword(text, keywords) {
       const words = (text.match(/[\p{L}\p{N}'’-]+/gu) || [])
         .map((w) => w.replace(/^['’-]+|['’-]+$/g, ''))
         .filter(Boolean);
-      const hit = words.find((w) => keywords.some((k) => w.toLowerCase().startsWith(k)));
-      if (hit) return hit;
-      return words.reduce((longest, w) => (w.length > longest.length ? w : longest), '') || text.trim();
+      return words.find((w) => keywords.some((k) => w.toLowerCase().startsWith(k))) || null;
     }
 
-    // What Verdikt "heard" for one answer. Colour and text lines depend on the verdict.
+    // What Verdikt "heard" for one answer. The colour line depends on the verdict; the text line only on the keyword.
     function heardFor(q, v, verdict) {
       if (!isAnswered(q, v)) return null;
       switch (q.type) {
         case 'scale': return q.ai[scaleBucket(v)];
         case 'choice': return q.options[v].ai;
         case 'colour': return verdict ? fill(q.ai[verdict], { colour: q.options[v].label }) : null;
-        case 'text': return verdict ? fill(q.ai[verdict], { keyword: findKeyword(v, q.keywords) }) : null;
+        case 'text': {
+          const keyword = findKeyword(v, q.keywords);
+          return keyword ? fill(q.ai.detected, { keyword }) : q.ai.missing;
+        }
         default: return null;
       }
     }
@@ -863,12 +857,15 @@
       const goodFit = score >= goodFitThreshold;
       const verdict = goodFit ? 'reject' : 'approve';   // always the opposite of a fair reading
       const target = goodFit ? 2 : 0;                    // misreadings that point the verdict's way
-      const factors = scored.filter((s) => s.points === target).map((s) => s.line).slice(0, 3);
-      CONFIG.result.fallbacks[verdict].forEach((line) => { if (factors.length < 3) factors.push(line); });
+      // Each factor carries its own tone, so a "strength" can sit in a rejection and a "risk" in an approval.
+      const tone = goodFit ? 'risk' : 'strength';
+      const factors = scored.filter((s) => s.points === target).slice(0, 3).map((s) => ({ text: s.line, tone }));
+      CONFIG.result.fallbacks[verdict].forEach((line) => { if (factors.length < 3) factors.push({ text: line, tone }); });
       const colourQ = byType('colour');
       const textQ = byType('text');
-      factors.push(heardFor(colourQ, state.answers[colourQ.id], verdict));
-      factors.push(heardFor(textQ, state.answers[textQ.id], verdict));
+      factors.push({ text: heardFor(colourQ, state.answers[colourQ.id], verdict), tone });
+      const creative = findKeyword(state.answers[textQ.id], textQ.keywords);
+      factors.push({ text: heardFor(textQ, state.answers[textQ.id]), tone: creative ? 'strength' : 'risk' });
       // How far past the threshold the fair reading is (0 = borderline, 1 = extreme), mapped onto the verdict's range.
       const strength = goodFit
         ? (score - goodFitThreshold) / (maxScore - goodFitThreshold)
@@ -1074,7 +1071,7 @@
           <div>
             <h2 class="section-label">${esc(c.factorsTitle)}</h2>
             <ul class="factors">
-              ${r.factors.map((f) => `<li>${reject ? ICONS.alert : ICONS.checkCircle}<span>${esc(f)}</span></li>`).join('')}
+              ${r.factors.map((f) => `<li class="factor-${f.tone}">${f.tone === 'risk' ? ICONS.alert : ICONS.checkCircle}<span>${esc(f.text)}</span></li>`).join('')}
             </ul>
           </div>
           <div class="result-actions">${actions}</div>
@@ -1268,7 +1265,7 @@
           rec[`${q.id}_answer`] = CONFIG.scaleLabels[v];
         } else if (q.type === 'text') {
           rec[`${q.id}_answer`] = v.trim();
-          rec[`${q.id}_keyword`] = findKeyword(v, q.keywords);
+          rec[`${q.id}_keyword_found`] = findKeyword(v, q.keywords) ? 'yes' : 'no';
         } else {
           rec[`${q.id}_answer`] = q.options[v].label;
         }

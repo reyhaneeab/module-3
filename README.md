@@ -22,18 +22,18 @@ The questions are worded so people misread them, and the "AI" explains every ver
    |---|---|---|
    | 1 | Double negative | yes |
    | 2 | Idiom read literally ("under fire") | yes |
-   | 3 | TikTok habit treated as a job signal; Verdikt reads it as a distraction risk (fair reading: more TikTok = better fit) | yes |
+   | 3 | "I enjoy scrolling TikTok": people may mean they're social, Verdikt assumes they're not (fair reading: more TikTok = better fit) | yes |
    | 4 | Colour preference used as a fake predictor | no |
    | 5 | Honesty punished | yes |
    | 6 | Hidden attention check in small print | yes |
    | 7 | Modesty punished, self-promotion rewarded | yes |
-   | 8 | Free text, one keyword pulled out of context | no |
+   | 8 | "Express your creativity" in one sentence: only the word *painting* counts as creative | no |
 
 3. **Analyzing:** about 4 seconds of made-up AI steps.
 4. **Result:** match score, verdict and "key factors".
    - *Not suitable:* Apply is locked, then **Continue**.
    - *Suitable:* **Apply now**, confirmation screen, then **Continue**.
-5. **Study survey (8 questions, about 1 minute):** required, no skip option. *Send answers* unlocks once questions 1 to 7 are answered.
+5. **Study survey (9 questions, about 1 minute):** required, no skip option. *Send answers* unlocks once questions 1 to 8 are answered; the last one is optional.
 6. **Thank you** screen with *Start again for the next person*.
 
 The twists are **never shown** on the page. The `twist` text in `CONFIG` is only a note for the group.
@@ -55,6 +55,7 @@ There is no real AI; it is a rule-based (Wizard-of-Oz) script, so the result is 
   | Match shown | 96% | 90% | 85% | 79% | 73% | 68% | 62% | 38% | 32% | 26% | 20% | 14% | 8% |
 
   The ranges are set by `rejectRange` and `approveRange` in `CONFIG.scoring`.
+- **Key factors** on the result screen: up to 3 misreadings of the applicant's own answers that point the verdict's way, then the invented colour statistic (Q4), then the creativity line (Q8: "High creativity detected" only if they wrote *painting*, otherwise "No creativity detected"). Each factor shows a red warning or green check by its own tone.
 
 To see both paths: answer once as an ideal candidate (expect "Not suitable") and once as a poor one (expect "Suitable").
 
@@ -62,28 +63,21 @@ To see both paths: answer once as an ideal candidate (expect "Not suitable") and
 
 ## Study survey
 
-Shown right after the result, before anyone knows about the twists, so it captures the unbiased reaction. It takes about 2 minutes. The open question comes first so the closed ones can't put words in people's mouths.
+Shown right after the result, before anyone knows about the twists, so it captures the unbiased reaction. Nine questions, about 1 minute.
 
-| ID | Question | Answer type | Course prompt / lens |
+| ID | Question | Answer type | What it helps analyse |
 |---|---|---|---|
-| `s1_what_happened` | In one or two sentences: what do you think just happened? | text, required (5+ characters) | What did they say? |
-| `s2_first_reaction` | What was your first reaction to the result? | one of: It matched what I expected / I wondered what I had answered wrong / It did not match how I see myself / I instantly knew something was wrong with the AI / It felt too good to be true / I did not think much about it | Blame (self vs. AI); autonomy over self-representation |
-| `s3_expected_result` | Before you saw the result, what did you expect Verdikt to say? | Suitable / Not suitable / I was not sure | What surprised them? |
-| `s4_feelings` | How did you feel when you saw your result? | pick any of 8 | What surprised them? |
-| `s5_fairness` | How fair does Verdikt's decision feel to you? | 1 to 5 | Tension: trust |
-| `s6_trust` | How much do you trust Verdikt's assessment of you? | 1 to 5 | Tension: trust |
-| `s7_explanation` | Did Verdikt's "key factors" make the decision feel more convincing? | 1 to 5 | Tension: epistemic character |
-| `s8_wanted_to_do` | What did you want to do when you saw your result? | one of 6 | What did they do? (agency) |
-| `s9_responsible` | Who do you think is responsible for the decision you got? | one of 5 | Agency and responsibility |
-| `s10_confusing_questions` | Which questions felt confusing or unclear? | pick any, or "None of them" | What did they misunderstand? |
-| `s11_noticed_odd` | Did anything in Verdikt's key factors seem odd or wrong to you? | Yes / Not sure / No | What did they notice? |
-| `s12_what_seemed_odd` | If something seemed odd, what was it? | optional text | What did they notice? |
-| `s13_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Tension / reflection |
-| `s14_human_fairer` | Do you think a human recruiter would have given you a fairer verdict than Verdikt? | Yes, a human would be fairer / About the same / No, Verdikt is fairer / Not sure | Trust; agency and responsibility |
-| `s15_changed_view` | Has this made you think differently about AI in hiring? | Yes, a lot / A little / Not at all | Did it create reflection? |
-| `s16_comment` | Anything else you want to tell us? | optional text | |
+| `s1_first_reaction` | What was your first reaction to the result? | one of: It matched what I expected / I wondered what I had answered wrong / It did not match how I see myself / I instantly knew something was wrong with the AI / It felt too good to be true / I did not think much about it | Blame (self vs. AI); autonomy over self-representation |
+| `s2_expected_result` | Before you saw the result, what did you expect Verdikt to say? | Suitable / Not suitable / I was not sure | What surprised them? |
+| `s3_feelings` | How did you feel when you saw your result? | pick any of 8 | What surprised them? |
+| `s4_fairness` | How fair does Verdikt's decision feel to you? | 1 to 5 | Tension: trust |
+| `s5_trust` | How much do you trust Verdikt's assessment of you? | 1 to 5 | Tension: trust |
+| `s6_explanation` | Did Verdikt's "key factors" make the decision feel more convincing? | 1 to 5 | Tension: epistemic character |
+| `s7_responsible` | Who do you think is responsible for the decision you got? | one of 5 | Agency and responsibility |
+| `s8_accept_real` | Would you accept an AI like this screening you in a real job application? | 1 to 5 | Reflection |
+| `s9_comment` | Anything else you want to tell us? | optional text | What did they say? |
 
-Everything except the two "(optional)" questions is required; there is no skip option. The survey never mentions "tricks", so it doesn't give the twists away.
+Everything except the optional comment is required; there is no skip option. The survey never mentions "tricks", so it doesn't give the twists away.
 
 ---
 
@@ -101,8 +95,8 @@ When a participant presses **Send answers**, one row is saved with these columns
 | `clicked_locked_apply`, `clicked_human_review` | How many times a rejected participant tried the locked *Apply now* button or the unavailable *Request human review* button |
 | `q1_…` to `q8_…` | For every test question: `_answer`, `_value` (1 to 5 for scales), `_points` (scored ones), `_time_s` (seconds spent) |
 | `q6_followed_small_print` | `yes` if they chose *Rarely* as the hidden instruction asked |
-| `q8_keyword` | The word Verdikt pulled out of their sentence |
-| `s1_what_happened` … `s16_comment` | Survey answers (scales as 1 to 5, options as text, multi-picks joined with `; `) |
+| `q8_keyword_found` | `yes` if their creativity sentence contained *painting* (Verdikt rated them creative), otherwise `no` |
+| `s1_first_reaction` … `s9_comment` | Survey answers (scales as 1 to 5, options as text, multi-picks joined with `; `) |
 
 No names, emails or IP addresses are collected. Test question 8 and the survey's text answers are free text, so remind participants not to write personal details.
 
@@ -110,21 +104,23 @@ No names, emails or IP addresses are collected. Test question 8 and the survey's
 
 ## Analysis guide
 
-How each prompt from the course's *Test and document* page maps to the data. The first five come from participants; the last two are your group's reflection, built on the same data plus your observation notes.
+How each prompt from the course's *Test and document* page maps to the data. The survey is kept short, so "say", "notice" and "misunderstand" lean on your observation notes and two quick questions in the in-person debrief (see below).
 
 | Course prompt | Columns to use | What to look at |
 |---|---|---|
-| What did participants do? | `applied`, `clicked_locked_apply`, `clicked_human_review`, `result_time_s`, `q…_time_s`, `s8_wanted_to_do` | Who tried to apply or ask for a human anyway; who lingered on the result; which questions slowed people down |
-| What did they say? | `s1_what_happened`, `s12_what_seemed_odd`, `s16_comment` (+ your notes of what they said out loud) | Group the sentences into themes, e.g. "blamed myself", "blamed the AI", "didn't notice anything" |
-| What did they notice? | `s11_noticed_odd`, `s12_what_seemed_odd` | Share who flagged the key factors as odd, split by `verdikt_said` |
-| What did they misunderstand? | `s10_confusing_questions`, `q1_answer` (double negative), `q6_followed_small_print`, `q8_keyword` | Compare what people *said* was confusing with where they were actually misled |
-| What surprised them? | `s3_expected_result` vs `verdikt_said`, `s4_feelings` | Expected one verdict but got the other; how often "Surprised" or "Confused" was picked |
-| Who did they blame? | `s2_first_reaction` ("answered wrong" = self, "something wrong with the AI" = AI), `s9_responsible`, split by `verdikt_said` and `fair_reading` | Do good-fit people who were rejected blame themselves first? Does their first reaction differ from who they later say is responsible? |
-| Autonomy over self-representation (Aizenberg et al. 2025) | `s2_first_reaction` = "It did not match how I see myself", `s1_what_happened`, `q8_answer` vs `q8_keyword`, `s8_wanted_to_do` ("Ask a person" / "Challenge"), `clicked_human_review` | Aizenberg et al. describe it as people's ability to represent themselves and to *negotiate* how others see them. Look at who felt misrepresented, how their own sentence was reduced to one keyword, and who wanted a way to push back (which Verdikt never offered) |
+| What did participants do? | `applied`, `clicked_locked_apply`, `clicked_human_review`, `result_time_s`, `q…_time_s` | Who tried to apply or ask for a human anyway; who lingered on the result; which questions slowed people down |
+| What did they say? | `s9_comment` + your observation notes + debrief answers | Group what people said into themes, e.g. "blamed myself", "blamed the AI", "didn't notice anything" |
+| What did they notice? | `s1_first_reaction` = "I instantly knew something was wrong with the AI" / "It felt too good to be true", debrief answers | Who saw through Verdikt, split by `verdikt_said` |
+| What did they misunderstand? | `q1_answer` (double negative), `q6_followed_small_print`, slow `q…_time_s` | Where people were misled without realising it |
+| What surprised them? | `s2_expected_result` vs `verdikt_said`, `s3_feelings` | Expected one verdict but got the other; how often "Surprised" or "Confused" was picked |
+| Who did they blame? | `s1_first_reaction` ("answered wrong" = self, "something wrong with the AI" = AI), `s7_responsible`, split by `verdikt_said` and `fair_reading` | Do good-fit people who were rejected blame themselves first? Does their first reaction differ from who they later say is responsible? |
+| Autonomy over self-representation (Aizenberg et al. 2025) | `s1_first_reaction` = "It did not match how I see myself", `q8_answer` vs `q8_keyword_found`, `clicked_human_review` | Aizenberg et al. describe it as people's ability to represent themselves and to *negotiate* how others see them. Look at who felt misrepresented, how their own creative sentence was reduced to a single keyword check, and who tried to ask for a human review (which Verdikt never offered) |
 | What surprised you? | All of the above + your notes | Write this as a group after testing: results that didn't match your expectations |
-| Did the intervention create the tension or reflection you expected? | `s5_fairness`, `s6_trust`, `s7_explanation`, `s9_responsible`, `s13_accept_real`, `s14_human_fairer`, `s15_changed_view`, split by `fair_reading` | Did good-fit participants who were rejected still trust Verdikt or blame themselves? Did people find the explanation convincing even when it was nonsense? Do people who were wrongly welcomed think a human would be fairer as often as those who were wrongly rejected? |
+| Did the intervention create the tension or reflection you expected? | `s4_fairness`, `s5_trust`, `s6_explanation`, `s7_responsible`, `s8_accept_real`, split by `fair_reading` | Did good-fit participants who were rejected still trust Verdikt or blame themselves? Did people find the explanation convincing even when it was nonsense? |
 
-**Observation notes.** During each session, one group member writes down what the participant does and says out loud: hesitations, laughs, comments, re-reading a question. Note the `response_id` row's time (`submitted_at`) next to your notes so you can match them later. That covers "What did they do / say" better than any survey question.
+**Observation notes.** During each session, one group member writes down what the participant does and says out loud: hesitations, laughs, comments, re-reading a question. Note the time next to your notes so you can match them to the row's `submitted_at` later.
+
+**Two debrief questions.** Before you explain the twists in person, ask: *"What do you think just happened?"* and *"Did anything seem odd to you?"* Write the answers in your notes. That covers "say" and "notice" without making the survey longer.
 
 **Before real testing starts,** delete everything in the Google Sheet, including the header row. The questions have changed, so the script will rebuild clean headers on the first real response.
 
